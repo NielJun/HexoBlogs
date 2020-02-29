@@ -1,0 +1,1313 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="blender 学习章, 小客栈">
+    <meta name="description" content="
+由于自己是做独立游戏开发的，缄默是少不了的。开源免费的Blender近年来大热，做一般游戏建模肯定是没问题的，B站这个教程很不错：
+【跟顺子老师学3D】blender零基础入门教程【全】一晚上一口气就看了十几课，速度快一点的话两三天就可以">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>blender 学习章 | 小客栈</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小客栈</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小客栈</div>
+        <div class="logo-desc">
+            
+              今日长缨在手，何时缚住苍龙？
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Nieljun" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Git
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Nieljun" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Git" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">blender 学习章</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%B8%B8%E6%88%8F%E7%BE%8E%E6%9C%AF/">
+                                <span class="chip bg-color">游戏美术</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%BB%BA%E6%A8%A1/">
+                                <span class="chip bg-color">建模</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%B8%B8%E6%88%8F%E6%A0%88/" class="post-category">
+                                游戏栈
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-07-10
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    17 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p><img src="/2019/07/10/blender-xue-xi-zhang/start.jpg" alt></p>
+<p>由于自己是做独立游戏开发的，缄默是少不了的。<br>开源免费的Blender近年来大热，做一般游戏建模肯定是没问题的，B站这个教程很不错：</p>
+<h4 id="【跟顺子老师学3D】blender零基础入门教程【全】"><a href="#【跟顺子老师学3D】blender零基础入门教程【全】" class="headerlink" title="【跟顺子老师学3D】blender零基础入门教程【全】"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D1" target="_blank" rel="noopener">【跟顺子老师学3D】blender零基础入门教程【全】</a></h4><p>一晚上一口气就看了十几课，速度快一点的话两三天就可以学完，Blender的快捷键非常多而且使用频繁，对于一个初学者来说很容易就忘光了，然后回头在视频里查找又是比较没效率的事情，所以必须写点笔记。</p>
+<h3 id="一、结合Unity"><a href="#一、结合Unity" class="headerlink" title="一、结合Unity"></a>一、结合Unity</h3><p>Unity游戏开发用了5年多了，一开始使用blender时很困惑，因为坐标系跟Unity完全不一样， Z轴居然向上，在以前的Unity老版本里好像还要自己进行手动转换坐标，而在当前Unity 2018版本可以直接拖动blender的文件到项目里，会自动转换坐标，转换后的视角相当于blender里的后视图的视角。</p>
+<blockquote>
+<p><strong>2018.7.3：今天特意试了一下把blender工程文件直接保存到unity目录下，然后加入到场景中，发现Cycles渲染模式下创建的材质全部都不能正常显示，又试了一下Blender渲染模式可以正常显示，而且在Blender中所作的修改可以在Unity中自动刷新载入显示。其实想想也正常，毕竟Cycles渲染是离线渲染而Unity是实时渲染，无法直接使用是很正常的。</strong><br><strong>因为我主要应用于Unity，所以平常还是多学习Blender渲染模式，除非一些高质量场景使用烘焙的情况才使用Cycles。</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>2018.7.6：尝试导出包含骨骼动画的fbx文件然后在Unity中载入。出现了很多奇怪的问题，比如人物部分位置偏移（好像是使用了IK骨的原因）。最终还是使用blender源文件直接载入到Unity中，然后一点问题都没有了，WTF！真是折腾死我了。</strong></p>
+</blockquote>
+<h3 id="二、视频学习笔记"><a href="#二、视频学习笔记" class="headerlink" title="二、视频学习笔记"></a>二、视频学习笔记</h3><p>目前Blender 2.8版本还没正式推出，视频里使用的是2.79版，我使用2.79b版本好像没什么区别。</p>
+<hr>
+<h4 id="01-简介"><a href="#01-简介" class="headerlink" title="01. 简介"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D1" target="_blank" rel="noopener">01. 简介</a></h4><p>下载安装软件，没啥可说的。</p>
+<hr>
+<h4 id="02-界面及基本操作"><a href="#02-界面及基本操作" class="headerlink" title="02. 界面及基本操作"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D2" target="_blank" rel="noopener">02. 界面及基本操作</a></h4><p>中文界面设置：”File” -&gt; “User Preference”-&gt;“System”，将滚动条拉到下面，勾选“International Fonts”在下面，选择Language 为“simplified Chinese(简体中文)”。<br>勾选下面的“Interface”和“Tooltips”，不要选择“New Data”（因为可能一些插件不支持中文路径。）</p>
+<p>同页面的Cycles Compute Device选择CUDA，再选中下面的显卡，这样在主窗口可以选择Cycles渲染。</p>
+<p>勾选“界面”页中的“自动透视模式”。</p>
+<p>关闭设置窗口前注意要点击左下角“保存用户设置”，否则重启后丢失修改的设置。</p>
+<p>滚动鼠标中键：视图缩放。<br>按住鼠标中键：视图旋转。<br>SHIFT+鼠标中键：视图平移。<br>鼠标右键：选中目标。</p>
+<p>多窗口分割：拖动窗口边缘的三角形。<br>多窗口关闭：拖动窗口边缘的三角形到反方向。<br>每个分割窗口左下角或者右上角按钮可以切换不同视图。<br>“T键”：切换工具栏显示。<br>“N键”：切换属性栏显示。<br>小键盘区：<br>“5”：透视/正交视图切换。<br>其他键懒得写了，各种视图切换。</p>
+<p>无小键盘（比如笔记本）：启用自带插件“3D View:3D Navigation，然后在工具栏的“显示”页里点击按钮代替小键盘。</p>
+<p>选择物体后：<br>“G键”：（grab)移动物体。然后按X,Y,Z可以根据轴移动。按SHIFT+X/Y/Z可以锁定X/Y/Z，然后根据其他轴移动（此功能还不如直接在正交视图中移动）。<br>“S键”：（scale)缩放物体。然后按X,Y,Z可以根据轴缩放。<br>“R键”：（rotate)旋转物体。然后按X,Y,Z可以根据轴旋转。双击“R”实现360度立体旋转。<br>GSR操作时按住“SHIFT”键可以精细操作。<br>切换GSR操作的参照坐标系：切换窗口下面的菜单栏里的“全局”和“自身”。</p>
+<p>“SHIFT+C”：3D游标恢复到视图中心。<br>“SHIFT+A”：（add）（在3D游标处）添加物体。<br>“X键”：删除物体。</p>
+<hr>
+<h4 id="03-主题安装及其他补充"><a href="#03-主题安装及其他补充" class="headerlink" title="03. 主题安装及其他补充"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D3" target="_blank" rel="noopener">03. 主题安装及其他补充</a></h4><p>energy(能量)主题：<br>原作者：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fstudiollb.wordpress.com%2Fdownload%2F" target="_blank" rel="noopener">https://studiollb.wordpress.com/download/</a></p>
+<hr>
+<h4 id="04-保存和备份"><a href="#04-保存和备份" class="headerlink" title="04. 保存和备份"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D4" target="_blank" rel="noopener">04. 保存和备份</a></h4><p>保存时会自动产生一个备份文件。<br>保存窗口里的“+”、“-”按钮可以自动递增递减文件名。</p>
+<hr>
+<h4 id="05-编辑模式基本操作"><a href="#05-编辑模式基本操作" class="headerlink" title="05. 编辑模式基本操作"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D5" target="_blank" rel="noopener">05. 编辑模式基本操作</a></h4><p>“TAB键”：切换编辑模式/物体模式。<br>编辑模式：<br>“CTRL+TAB键”：切换顶点/边/面。<br>“A键”：全选或者取消全选。<br>“SHIFT+鼠标右键”：多选点线面。</p>
+<hr>
+<h4 id="06-编辑模式下的多选"><a href="#06-编辑模式下的多选" class="headerlink" title="06. 编辑模式下的多选"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D6" target="_blank" rel="noopener">06. 编辑模式下的多选</a></h4><p>编辑模式：<br>“CTRL+鼠标左键”：自动选择邻近点线面。<br>“ALT+鼠标左键”：选中整行或者整列点线面。<br>“C键”：自由刷选。可以滚动鼠标中键来控制刷选区大小。左键选中，中键按下取消选择。<br>“B键”：（box)框选。<br>“CTRL+鼠标左键拖动”：在按下后可以自由拖选。<br>“L键”：全选鼠标所在点线面的物体。<br>“CTRL+小键盘加号”：扩展选区。<br>“CTRL+小键盘减号”：缩减选区。</p>
+<hr>
+<h4 id="07-环切"><a href="#07-环切" class="headerlink" title="07. 环切"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D7" target="_blank" rel="noopener">07. 环切</a></h4><p>编辑模式：<br>“CTRL+R”：环切。环切时滚动滚轮可以切多刀。</p>
+<hr>
+<h4 id="08-细分"><a href="#08-细分" class="headerlink" title="08. 细分"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D8" target="_blank" rel="noopener">08. 细分</a></h4><p>编辑模式：<br>细分：选中物体后按“W键”弹出菜单，选择“细分”。细分时工具栏的细分选项页可以控制切割次数。<br>“SHIFT+R”：(repeat)重做上一次操作。</p>
+<p>细分主要对面操作，对边也可以细分但是细分为点。顶点无法细分。</p>
+<p>“CTRL+E”：反细分。（不在课程内，自己查的）。</p>
+<hr>
+<h4 id="09-挤出"><a href="#09-挤出" class="headerlink" title="09. 挤出"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D9" target="_blank" rel="noopener">09. 挤出</a></h4><p>编辑模式：<br>“E键”：选中点线面都可以挤出，但一般主要对面操作。</p>
+<p>挤出时右键取消实际上还是挤出了，只不过重叠在原有位置。</p>
+<p>环切左键确定后可以按“S键”然后移动坐标轴进行缩放环切线。缩放时可以直接输入缩放倍数，在左下角有显示缩放当前倍数。</p>
+<hr>
+<h4 id="10-倒角"><a href="#10-倒角" class="headerlink" title="10. 倒角"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D10" target="_blank" rel="noopener">10. 倒角</a></h4><p>编辑模式：<br>选中边，按“CTRL+B”进行倒角，此时可以滚动滚轮增加倒角边。</p>
+<p>环切确认后也可以按“CTRL+B”和滚轮增加环切边。</p>
+<hr>
+<h4 id="11-合并与分离"><a href="#11-合并与分离" class="headerlink" title="11. 合并与分离"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D11" target="_blank" rel="noopener">11. 合并与分离</a></h4><p><strong>物体的合并与分离：</strong><br>物体模式：<br>“CTRL+J”：“join”。合并选中的多个物体。合并后的轴心在最后选中物体的轴心。<br>编辑模式：<br>“P键”：选中物体后按P键弹跳出菜单可以进行多种分离模式。没选中任何物体时也可以按P键进行按松散块分离。</p>
+<p><strong>顶点的合并与分离：</strong><br>“V键”：选中顶点后进行按键拖动分离。此模式比较坑的一点是就算按鼠标右键取消分离，其实也还是分离了，如果不想分离只能按CTRL+Z撤消操作。<br>“ALT+M键”：选中两个点按键后弹出菜单合并。</p>
+<hr>
+<h4 id="12-创建边与面"><a href="#12-创建边与面" class="headerlink" title="12. 创建边与面"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D12" target="_blank" rel="noopener">12. 创建边与面</a></h4><p>编辑模式：<br>“F键”：(fill)选中点或者边，然后按F键进行填充边或者面。</p>
+<hr>
+<h4 id="13-衰减编辑"><a href="#13-衰减编辑" class="headerlink" title="13. 衰减编辑"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D13" target="_blank" rel="noopener">13. 衰减编辑</a></h4><p>编辑模式：<br>“O键”：启用衰减编辑。底下菜单栏也可以选择，还可以切换衰减模式。<br>衰减编辑模式：<br>“G键”：此时滚动鼠标滚轮控制衰减范围。<br>“ALT+O键”：“衰减编辑模式-相连项”：开启后不会影响不相连的其他物体。</p>
+<hr>
+<h4 id="14-轴心点"><a href="#14-轴心点" class="headerlink" title="14. 轴心点"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D14" target="_blank" rel="noopener">14. 轴心点</a></h4><p>选中多个物体可以通过下面的菜单栏切换轴心点，默认轴心点为质心点。缩放旋转都是根据轴心点进行的。</p>
+<p>合并多个物体后，轴心点会被设置到最后一个选中的物体的轴心点上。分离物体后各个物体的轴心点不会恢复的原有的位置。</p>
+<p>“CTRL+ALT+SHIFT+C键”：弹出设置原点菜单，可以修改原点。原点即轴心点。</p>
+<p>编辑模式：<br>“SHIFT+S键”：（snap）吸附菜单。可以修改游标位置等。</p>
+<hr>
+<h4 id="15-内插面-amp-应用缩放比例"><a href="#15-内插面-amp-应用缩放比例" class="headerlink" title="15. 内插面&amp;应用缩放比例"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D15" target="_blank" rel="noopener">15. 内插面&amp;应用缩放比例</a></h4><p>实体显示状态：属性栏-&gt;着色方式-&gt;Mapcap修改编辑时的着色方式，不影响渲染。</p>
+<p>编辑模式：<br>内插面方式一：选择面按E挤出时右键取消实际上还是挤出了，只不过重叠在原有位置。然后按S修改面大小，然后再按E挤出。</p>
+<p>内插面方式二：<br>“I键”：（insert）插入面。然后再按E挤出。</p>
+<p>物体模式：<br>“CTRL+A键”：（apply）应用菜单。缩放物体后比例变化，可以应用比例把比例值变为1，其实意思就是应用保存修改。</p>
+<hr>
+<h4 id="16-表面细分"><a href="#16-表面细分" class="headerlink" title="16. 表面细分"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D16" target="_blank" rel="noopener">16. 表面细分</a></h4><p>选中物体添加修改器，添加表面细分修改器。<br>表面细分可以配合工具栏-&gt;工具中的着色方式（光滑、平直）使用。</p>
+<p>快捷键：选中物体按“CTRL+数字键”直接添加表面细分器，数字代表了细分的次数。</p>
+<hr>
+<h4 id="17-镜射"><a href="#17-镜射" class="headerlink" title="17. 镜射"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D17" target="_blank" rel="noopener">17. 镜射</a></h4><p>编辑模式：<br>切分后线框模式下按B框选可以选择背后的边。按X删除顶点。添加镜射修改器，根据XYZ轴选择镜射。</p>
+<p>勾选镜射修改器的范围限制可以防止交界处分离或者越界。</p>
+<hr>
+<h4 id="18-布尔"><a href="#18-布尔" class="headerlink" title="18. 布尔"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D18" target="_blank" rel="noopener">18. 布尔</a></h4><p>添加布尔修改器，指定参照物体。</p>
+<p>布尔插件：Bool Tool。添加插件后，在工具栏-&gt;工具下有Bool Tool，选中两个物体可以进行布尔操作。</p>
+<p>有时按中键移动视图很慢，按小键盘小数点键恢复一下视图即可。</p>
+<hr>
+<h4 id="19-修改器顺序"><a href="#19-修改器顺序" class="headerlink" title="19. 修改器顺序"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D19" target="_blank" rel="noopener">19. 修改器顺序</a></h4><p>修改器不同的顺序产生不同的效果。</p>
+<p>实体修改器增加厚度，比如平面、衣服等厚度。</p>
+<hr>
+<h4 id="20-相机设置及渲染"><a href="#20-相机设置及渲染" class="headerlink" title="20. 相机设置及渲染"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D20" target="_blank" rel="noopener">20. 相机设置及渲染</a></h4><p>“SHIFT+Z键”：切换渲染模式（预览）。</p>
+<p>开启快捷切换插件：Pie Menu 3D -&gt;View Numpad Pie: Q。 可以快速切换视图。<br>前视图移动物体时按住CTRL可以按网格移动。<br>“F12键”：开始渲染。<br>“M键”：移动选中物体到不同图层。<br>“小键盘0键”：显示相机视图。</p>
+<p>选中相机按N打开属性面板-&gt;锁定到视图，可以锁定相机视图，此时移动视图然后渲染所见即所得。</p>
+<p>渲染窗口：切换底部“槽”可以保存每次的渲染结果。可以使用大键盘数字键来切换槽。</p>
+<p>编辑窗口的大键盘数字键可以切换图层（自己试出来的）。</p>
+<p>最右属性栏-&gt;世界环境-&gt;背景-&gt;颜色旁的小点弹出菜单可以选择天空纹理。</p>
+<hr>
+<h4 id="21-灯光设置"><a href="#21-灯光设置" class="headerlink" title="21. 灯光设置"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D21" target="_blank" rel="noopener">21. 灯光设置</a></h4><p>灯光没啥好说的，自己试验修改各种参数看效果。日光只有旋转才会有不同效果，移动位置不影响。</p>
+<p>使用给平面增加材质来模拟光源：创建平面，增加纹理，修改漫射BSDF为自发光。<br>选中这个发光的面，设置物体属性-&gt;Cycles 设定-&gt;Ray Visibilty-&gt;关闭摄像机可以隐藏这个面，但发出的光还是有效。<br>可以对这个发光的面进行各种编辑（缩放旋转修改形状等）来产生不同的效果。</p>
+<p>基本打光技巧，3个光源（3点光）:<br>主光源放在摄像机位置附近、辅助光源小一点放在摄像机侧面使主光源阴影更少一点，再增加一个光源放在摄像机所对物体后面。两个辅助光源都去掉投射阴影（只有灯光才有投射阴影，如果使用材质模拟光则没有。）。</p>
+<p>“ALT+S键”：还原缩放。<br>“ALT+R键”：还原旋转。</p>
+<hr>
+<h4 id="22-提高Cycles渲染速度"><a href="#22-提高Cycles渲染速度" class="headerlink" title="22. 提高Cycles渲染速度"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D22" target="_blank" rel="noopener">22. 提高Cycles渲染速度</a></h4><p>最右属性栏-&gt;渲染-&gt;采样：影响渲染效果和速度。<br>最右属性栏-&gt;渲染层-&gt;Denoising：降噪功能。此功能在我的烂显卡上不支持GPU渲染，只能CPU渲染。<br>最右属性栏-&gt;渲染-&gt;分块大小：影响渲染速度。插件：Auto Tile Size，自动根据机器配置设置分块大小。</p>
+<p>最右属性栏-&gt;渲染-&gt;光程：适当调节减小值可以提高速度，我不想调就用默认的。</p>
+<hr>
+<h4 id="23-材质"><a href="#23-材质" class="headerlink" title="23. 材质"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D23" target="_blank" rel="noopener">23. 材质</a></h4><p>各种材质没啥好说的，自己试效果就可以了。</p>
+<p>节点编辑器：各种快捷键跟3D视图编辑器差不多。可以新增着色器进行连线等操作。</p>
+<hr>
+<h4 id="24-Principled着色器"><a href="#24-Principled着色器" class="headerlink" title="24. Principled着色器"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D24" target="_blank" rel="noopener">24. Principled着色器</a></h4><p>世界环境-&gt;使用节点-&gt;背景-&gt;颜色（点按钮）-&gt;环境纹理-&gt;添加下载好的HDR文件。</p>
+<p>Principled着色器可以调出金属、塑料、透明等效果。</p>
+<hr>
+<h4 id="25-blender渲染"><a href="#25-blender渲染" class="headerlink" title="25. blender渲染"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D25" target="_blank" rel="noopener">25. blender渲染</a></h4><p>主要是材质和灯光跟Cycle的不同。<br>优势是速度快，但已经不再更新。</p>
+<hr>
+<h4 id="26-blender卡通渲染"><a href="#26-blender卡通渲染" class="headerlink" title="26. blender卡通渲染"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D26" target="_blank" rel="noopener">26. blender卡通渲染</a></h4><p>主要讲了Blender渲染模式下的卡通效果，具体的操作还是得参考视频。<br>freestyle描边。</p>
+<hr>
+<h4 id="27-principled着色器补充"><a href="#27-principled着色器补充" class="headerlink" title="27. principled着色器补充"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D27" target="_blank" rel="noopener">27. principled着色器补充</a></h4><p>表面细分：光穿透物体的程度。<br>Subsurface Radius：表面细分范围（RGB三色）。</p>
+<p>各向异性过滤：配合Metalic(金属）实现类似拉丝金属。<br>Anisotropic Rotation：各向异性过滤的旋转角度。</p>
+<blockquote>
+<p>我自己网上找的，更详细的Principled 知识参考下面链接：<br><a href="https://links.jianshu.com/go?to=http%3A%2F%2Fwww.blendercn.org%2F1771.html%2Fcomment-page-1%23comment-634" target="_blank" rel="noopener">2.79新材质节点 Principled 图解</a></p>
+</blockquote>
+<hr>
+<h4 id="28-表皮修改器制做小青蛙"><a href="#28-表皮修改器制做小青蛙" class="headerlink" title="28. 表皮修改器制做小青蛙"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D28" target="_blank" rel="noopener">28. 表皮修改器制做小青蛙</a></h4><p>创建平面，选中四点，ALT+M合并到中心，添加镜射修改器，挤出顶点，添加表皮修改器，添加表面细分修改器。</p>
+<p>表皮修改器标记根结点。<br>对顶点不能直接使用S键缩放，缩放顶点周边使用CTRL+A。</p>
+<p>做出大概形状后应用表皮修改器，再进一步进行细化。<br>需要先应用镜射修改器再应用表皮修改器。<br>表皮修改器可以直接创建简单的骨架。</p>
+<hr>
+<h4 id="29-UV展开与纹理"><a href="#29-UV展开与纹理" class="headerlink" title="29. UV展开与纹理"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D29" target="_blank" rel="noopener">29. UV展开与纹理</a></h4><p>“U键”：UV映射菜单。<br>“CTRL+E键”：(edge)选中边以后，按快捷键弹出边菜单，选择标记缝合边。<br>标记缝合边以后再按U-&gt;展开UV，然后在底部图像菜单新建图像。<br>底部UV菜单导出UV布局图。<br>在外部修改UV图像以后，使用新建材质-&gt;颜色-&gt;图像纹理-&gt;载入图像然后即可在材质视图看到效果。</p>
+<p>进入底部菜单的“纹理绘制”模式可以直接进行绘制。</p>
+<hr>
+<h4 id="30-相机跟踪"><a href="#30-相机跟踪" class="headerlink" title="30. 相机跟踪"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D30" target="_blank" rel="noopener">30. 相机跟踪</a></h4><p>创建空物体。<br>选中摄像机添加标准跟随约束，设置目标为空物体。修改约束中的-Z和向上为Y。<br>添加曲线-&gt;圆环，放大后CTRL+A应用缩放。<br>选中摄像机添加跟随路径约束，设置目标为圆环。<br>移动跟随路径约束到标准跟随约束上面。<br>点击跟随路径约束的动画路径。<br>播放即可实现动画。<br>可以对圆环进行各种编辑。</p>
+<hr>
+<h4 id="31-父级"><a href="#31-父级" class="headerlink" title="31. 父级"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D31" target="_blank" rel="noopener">31. 父级</a></h4><p>物体模式：<br>“CTRL+P键”：设定父级。<br>“ATL+P键”：清空父级。</p>
+<hr>
+<h4 id="32-1-骨骼之骨骼建立"><a href="#32-1-骨骼之骨骼建立" class="headerlink" title="32.1 骨骼之骨骼建立"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D32" target="_blank" rel="noopener">32.1 骨骼之骨骼建立</a></h4><p>这节课里的lowpoly死侍模型挺好看，可以学着做一个。</p>
+<p>骨架的镜像：<br>选中骨架-&gt;编辑模式-&gt;工具栏-&gt;选项-&gt;X轴镜像<br>然后按“SHIFT+E键”挤出骨骼即可左右自动对称挤出。<br>对于手臂和腿的挤出使用“ATL+P键”：断开骨骼连接。这样还保持着父级。</p>
+<p>头和臂从身体上段挤出，腿从身体下段挤出。</p>
+<hr>
+<h4 id="32-2-骨骼之权重绘制"><a href="#32-2-骨骼之权重绘制" class="headerlink" title="32.2 骨骼之权重绘制"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D33" target="_blank" rel="noopener">32.2 骨骼之权重绘制</a></h4><p>把骨架做为物体的父级（“CTRL+P键”），附带自动权重。<br>“CTRL+TAB键”：骨架姿态模式或者物体权重绘制模式。</p>
+<p>权重绘制只对顶点绘制，一般使用工具栏-&gt;工具里的F Mix笔刷，权重0表示不受骨骼影响，1表示完全受骨骼影响，其他中间值为部分受骨骼影响。按“F键”可以对笔刷大小缩放。</p>
+<p>使用选中物体模块在最右工具栏中数据页指定骨骼的方式可以直接设置权重值。</p>
+<hr>
+<h4 id="32-3-骨骼之IK骨"><a href="#32-3-骨骼之IK骨" class="headerlink" title="32.3 骨骼之IK骨"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D34" target="_blank" rel="noopener">32.3 骨骼之IK骨</a></h4><p>“SHIFT+I键”：添加IK骨。<br>默认IK骨的链长为0会影响所有骨骼，要修改为想要的链长。<br>关节处也要增加IK骨。<br>精细的多顶点模型有益于Blender创建自动权重的计算。</p>
+<hr>
+<h4 id="33-动画"><a href="#33-动画" class="headerlink" title="33. 动画"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D35" target="_blank" rel="noopener">33. 动画</a></h4><p>“I键”：添加关键帧。<br>曲线编辑器：“T键”：修改关键帧插值模式。</p>
+<p>N键属性栏可以直接修改关键帧变换数值。</p>
+<p>材质的颜色也可以增加关键帧。</p>
+<hr>
+<h4 id="34-作业"><a href="#34-作业" class="headerlink" title="34. 作业"></a><a href="https://links.jianshu.com/go?to=https%3A%2F%2Fwww.bilibili.com%2Fvideo%2Fav24292767%2F%3Fp%3D36" target="_blank" rel="noopener">34. 作业</a></h4><p>没啥可说的，开始做作业吧。</p>
+<hr>
+<h3 id="三、自己的学习补充"><a href="#三、自己的学习补充" class="headerlink" title="三、自己的学习补充"></a>三、自己的学习补充</h3><ol>
+<li>摄像机视角控制<br>小键盘快捷键“0”进入摄像机视图，按“SHIFT+F”，此时可以使用WASD和QE来移动视角（不过有一次我突然发现在此模式下居然无法使用WASDQE移动，然后重启软件后又可以了。)</li>
+</ol>
+<hr>
+<h3 id="四、贴吧看到的Rigify骨架插件使用技巧"><a href="#四、贴吧看到的Rigify骨架插件使用技巧" class="headerlink" title="四、贴吧看到的Rigify骨架插件使用技巧"></a>四、贴吧看到的Rigify骨架插件使用技巧</h3><p>还未实践。</p>
+<blockquote>
+<p>1.检查模型是否在世界中心，移动/旋转/缩放 模型，并Ctrl+A应用。<br>2.灯光、摄像机移至其他图层，并将模型贴图设置为Shadeless（个人建议）。<br>3.分离模型部件（如有需要的话）——分离的目的是为了待会儿更好地分类绑定与权重绘制。<br>4.开启Rigify插件，Shift+A添加。<br>5.大致匹配Rigify骨架于模型，并Ctrl+A应用骨架。<br>6.Tab进入骨架编辑模式，注意开启左侧竖栏Options选项里面的X-Axis Mirror，X轴镜像编辑。<br>7.对应骨点位置。<br>8.Check Unity Doc. 删除手指根骨节。<br>9.Normal Trans Orientation 去查看每个骨节的朝向。<br>10.Save As，存盘。<br>11.Generate生成带有控制器的骨架，并将原有基础骨架移至其他层。<br>12.Check Unity Doc. 选择相应骨架层，重置某些骨节的父子关系。<br>13.添加附加骨架（如果有需要的话），并为其设置对应的父子关系——需要配合项目骨节数要求。<br>注意：有些L.R对应的镜像骨节，可以在Normal Trans Orientation（Edit Mode）下查看其轴向,<br>以确保其在Pose Mode下可以被统一旋转。<br>14.绑定（为模型与骨架建立父子关系）——建议：Ctrl+P → Automatic Weight<br>15.选中模型，打开修改器面板下的Armature，勾选【Preserve Volume】如果有需要的话。<br>16.权重绘制（巧用笔刷工具与顶点遮罩工具）<br>17.眼球：Modifier, [Track to]<br>18.表情：Shape Key<br>19.武器（props）：利用[Child of]修改器与角色骨架建立关系。<br>20.Remove WGT-Bones in The Hierarchy. Using This Way will Affect Smoothly into Unity.<br>21.用极限POSE去检查绑定。</p>
+</blockquote>
+<p>暂时到这吧～</p>
+<p><img src="/2019/07/10/blender-xue-xi-zhang/end.jpg" alt></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn" rel="external nofollow noreferrer">慕谦</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn/2019/07/10/blender-xue-xi-zhang/">http://www.rubyboy.cn/2019/07/10/blender-xue-xi-zhang/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%B8%B8%E6%88%8F%E7%BE%8E%E6%9C%AF/">
+                                    <span class="chip bg-color">游戏美术</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%BB%BA%E6%A8%A1/">
+                                    <span class="chip bg-color">建模</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">赞赏是不耍流氓的鼓励</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/01/07/nginx-an-zhuang/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="Nginx服务器之一 安装">
+                        
+                        <span class="card-title">Nginx服务器之一 安装</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            ​                      
+
+Nginx是一款轻量级的Web 服务器反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，是一个高性能的HTTP和反向代
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Go/">
+                        <span class="chip bg-color">Go</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                    <a href="/tags/Ngix/">
+                        <span class="chip bg-color">Ngix</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/04/21/go-defer-xiang-jie/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Go defer 详解">
+                        
+                        <span class="card-title">Go defer 详解</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Defer详解
+defer语句是Go中一个非常有用的特性，可以将一个方法延迟到包裹该方法的方法返回时执行，在实际应用中，defer语句可以充当其他语言中try…catch…的角色，也可以用来处理关闭文件句柄等收尾操作。
+Go官方文档中对de
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-04-21
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Go/">
+                        <span class="chip bg-color">Go</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+            |&nbsp;Powered by&nbsp;<a href="https:www.rubyboy.cn" target="_blank">慕谦小客栈</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">51.6k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/NielJun" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:769288695@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=769288695" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 769288695" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" color="0,0,255"
+        pointColor="0,0,255" opacity='0.7'
+        zIndex="-1" count="99"
+        src="/libs/background/canvas-nest.js"></script>
+    
+
+    
+    
+    <script type="text/javascript" size="150" alpha='0.6'
+        zIndex="-1" src="/libs/background/ribbon-refresh.min.js" async="async"></script>
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,1775 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="游戏中的四元数, 小客栈">
+    <meta name="description" content="
+四元数简介Quaternion又称四元数，由x,y,z和w这四个分量组成，是由爱尔兰数学家威廉·卢云·哈密顿在1843年发现的数学概念。四元数的乘法不符合交换律。从明确地角度而言，四元数是复数的不可交换延伸。如把四元数的集合考虑成多维实数">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>游戏中的四元数 | 小客栈</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小客栈</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小客栈</div>
+        <div class="logo-desc">
+            
+              今日长缨在手，何时缚住苍龙？
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Nieljun" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Git
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Nieljun" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Git" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">游戏中的四元数</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Unity/">
+                                <span class="chip bg-color">Unity</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">
+                                <span class="chip bg-color">游戏开发</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/">
+                                <span class="chip bg-color">图形学</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%B8%B8%E6%88%8F%E6%A0%88/" class="post-category">
+                                游戏栈
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-01-07
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    5.2k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    23 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/start.png" alt></p>
+<h2 id="四元数简介"><a href="#四元数简介" class="headerlink" title="四元数简介"></a>四元数简介</h2><p>Quaternion又称四元数，由x,y,z和w这四个分量组成，是由爱尔兰数学家威廉·卢云·哈密顿在1843年发现的数学概念。四元数的乘法不符合交换律。从明确地角度而言，四元数是复数的不可交换延伸。如把四元数的集合考虑成多维实数空间的话，四元数就代表着一个四维空间，相对于复数为二维空间。</p>
+<p>在实际的图示如下：</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show.jpg" alt></p>
+<p>说实话关于四元数这一节真的是不好懂，因为里面涉及到好多数学知识，单说推出来的公式就有很多。不怕大家笑话，对于四元数的学习我足足花了两天的时间，包括整理出这篇文章。在前面一章我写到了“变换”，这也是总结的学习笔记。我发现，写博客真是的是一个好多学习方法，加上之前一个博士师兄告诉我，要想好好的学习一本书或者一门技术，那么以此将学习笔记或者经验写成博客专栏是一种有效的方法。现在我要坚持这种方式，给自己留下学习过程中的足迹，也给大家分享一下。欢迎大家指出其中的不足，谢谢！</p>
+<p>四元数是表示旋转的另一种数学形式，使用四元数可以节省存储空间，其之间的连接运算需要的算术运算更少，在产生平滑的三维动画时，用四元数更容易进行修改。</p>
+<p>四元数集合，在数学上被称为哈密顿四元数环(ring of Hamiltonian quaternions)，用H表示，可以理解为四维空间向量，空间中的元素q可以表示为：</p>
+<p>q = (x,y,z,w) = w + xi +yj + zk;</p>
+<p>也可以用实数和向量的形式进行表示，即：</p>
+<p>q = w + v;其中w是实数部分，v是v(x,y,z)。</p>
+<p>四元数集合是复数集合的自然扩展。四元数的乘法服从分配率。</p>
+<p>每个图形引擎都避免不了四元数的讨论，Unity游戏引擎的四元数类封装的比较好。</p>
+<h2 id="Quaternion类属性"><a href="#Quaternion类属性" class="headerlink" title="Quaternion类属性"></a>Quaternion类属性</h2><h5 id="eulerAngles-欧拉角"><a href="#eulerAngles-欧拉角" class="headerlink" title="eulerAngles-欧拉角"></a>eulerAngles-欧拉角</h5><p>定义：</p>
+<pre class=" language-c#"><code class="language-c#">public Vector3 eulerAngles{get;set;}</code></pre>
+<p>  如何改变一个游戏对象旋的转状态，我们可以通过改变其Transform进行欧拉角的变换次序，例如假设p(x,y,z)是游戏对象上的一个点，绕x轴旋转a角，绕y轴旋转b角，绕z轴旋转c角，这样就可以得到旋转之后的状态p’(x’,y’,z’)。</p>
+<p>​    Unity的实现过程是很简单的，一句代码就可以搞定。但是具体的实现过程确实很复杂的,涉及到很多矩阵的运算，这里就不过多的介绍。</p>
+<p>​    下面给出一个例子，演示一下如何使用欧拉角。</p>
+<pre class=" language-c#"><code class="language-c#">
+using UnityEngine;
+using System.Collections;
+
+public class EulerAngler_ts : MonoBehaviour {
+    public Transform A, B;
+    Quaternion rotations = Quaternion.identity;
+    Vector3 eulerAngle = Vector3.zero;
+    float speed = 10.0f;
+    float tSpeed = 0.0f;
+    // Use this for initialization
+    void Start () {
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        tSpeed += speed * Time.deltaTime;
+        //第一种方式：将Quaternion实例对象赋值给transform的rotation
+        rotations.eulerAngles = new Vector3(0.0f, tSpeed, 0.0f);
+        A.rotation = rotations;
+        //第二种方式：将三位向量代表的欧拉角直接赋值给transform的eulerAngle
+        B.eulerAngles = new Vector3(0.0f, tSpeed, 0.0f);
+    }
+}
+</code></pre>
+<h2 id="四元数在Unity-Quaternion类实例方法映射"><a href="#四元数在Unity-Quaternion类实例方法映射" class="headerlink" title="四元数在Unity Quaternion类实例方法映射"></a>四元数在Unity Quaternion类实例方法映射</h2><p>四元数向量的旋转矩阵变换，对于∂方向到ß方向的旋转变换有 SetFromToRotation (  ) 方法，原型是：</p>
+<pre class=" language-c#"><code class="language-c#">public void SetFromToRotion(Vector3 fromDirection,Vector3 toDirection);</code></pre>
+<p>如使用其创建旋转实例:</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class SetFromToDirection_ts : MonoBehaviour {
+    public Transform A, B, C;
+    Quaternion q = Quaternion.identity;
+    // Use this for initialization
+    void Start () {
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        q.SetFromToRotation(A.position, B.position);
+        C.rotation = q;
+        Debug.DrawLine(Vector3.zero, A.position, Color.red);
+        Debug.DrawLine(Vector3.zero, B.position, Color.green);
+        Debug.DrawLine(C.position, C.position + new Vector3(0.0f, 1.0f, 0.0f), Color.black);
+        Debug.DrawLine(C.position, C.TransformPoint(Vector3.up * 1.5f), Color.yellow);
+    }
+}</code></pre>
+<p>结果如图示: </p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/rotation.jpg" alt></p>
+<h3 id="设置Quaternion实例的朝向"><a href="#设置Quaternion实例的朝向" class="headerlink" title="设置Quaternion实例的朝向"></a>设置Quaternion实例的朝向</h3><pre class=" language-c#"><code class="language-c#">public void SetLookRotation(Vector3 view);
+public void SetLookRotation(Vector3 view,Vector3 up);</code></pre>
+<p>如:</p>
+<pre class=" language-c#"><code class="language-c#">Quaternion q = Quaternion.identity;
+q.SetLookRotation(v1,v2);
+transform.rotation = q;</code></pre>
+<p>transform.forward方向与V1方向相同。</p>
+<p>transform.right垂直于由Vector3.zer0、V1和V2这3点构成的平面。</p>
+<p>v2决定了transform.up的朝向，因为当transform.forward和transform.right方向确定后，transform.up的方向总会与V2的方向的夹角小于或等于90度。</p>
+<p>当v1为Vector3.zero时，方法失效。</p>
+<h3 id="ToAngleAxis"><a href="#ToAngleAxis" class="headerlink" title="ToAngleAxis"></a>ToAngleAxis</h3><pre class=" language-c#"><code class="language-c#">public void ToAngleAxis(out float angle,out Vector3 axis);</code></pre>
+<p>参数angle为旋转角，参数axis为轴向量。</p>
+<p>该函数可以实现将GameObject对象的rotation从Quaternion.identity状态变换到当前状态，只需要将GameObject对象绕着axis轴（世界坐标系）旋转angle角度即可。</p>
+<p>演示实例:</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class ToAngleAxis_ts : MonoBehaviour {
+    public Transform A, B;
+    float angle;
+    Vector3 axis = Vector3.zero;
+    float xSpeed = 0.0f, ySpeed = 0.0f, zSpeed = 0.0f;
+    // Use this for initialization
+    void Start () {
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        xSpeed += 0.5f * Time.deltaTime;
+        ySpeed += 1.0f * Time.deltaTime;
+        zSpeed += 2.5f * Time.deltaTime;
+        A.eulerAngles = new Vector3(xSpeed, ySpeed, zSpeed);
+        //获取A的rotation的旋转轴和角度
+        A.rotation.ToAngleAxis(out angle, out axis);
+        //设置B的rotation，使得B的rotation和A相同
+        B.rotation = Quaternion.AngleAxis(angle, axis);
+    }
+</code></pre>
+<h2 id="Quaternion类静态方法"><a href="#Quaternion类静态方法" class="headerlink" title="Quaternion类静态方法"></a>Quaternion类静态方法</h2><p>Quaternion中的静态方法有9个即：Angle方法、Dot方法、Euler方法、FromToRotation方法、Inverse方法、Lerp方法、LookRotation方法、RotateToWards方法和Slerp方法。关于静态的方法的使用就是直接用类名调用其静态方法，例如Quaternion.Angle(q1,q2);下面对这些静态方法做下分析。</p>
+<ol>
+<li><h3 id="Angle方法"><a href="#Angle方法" class="headerlink" title="Angle方法"></a>Angle方法</h3><pre class=" language-c#"><code class="language-c#">public static float Angle(Quaternion a,Quaternion b);</code></pre>
+<p>该方法可以计算两个旋转状态a达到b时需要旋转的最小夹角。</p>
+<p>实例演示:</p>
+<pre><code>using UnityEngine;
+using System.Collections;
+
+public class Angle_ts : MonoBehaviour {
+
+</code></pre></li>
+</ol>
+<pre><code>   // Use this for initialization
+   void Start () {
+
+       Quaternion q1 = Quaternion.identity;
+       Quaternion q2 = Quaternion.identity;
+       q1.eulerAngles = new Vector3(30.0f, 40.0f, 50.0f);
+       float a1 = Quaternion.Angle(q1, q2);
+       float a2 = 0.0f;
+       Vector3 v = Vector3.zero;
+       q1.ToAngleAxis(out a2,out v);
+
+       Debug.Log(&quot;a1: &quot; + a1);
+       Debug.Log(&quot;a2: &quot; + a2);
+       Debug.Log(&quot;q1的欧拉角: &quot; + q1.eulerAngles + &quot; q1的rotation: &quot; + q1);
+       Debug.Log(&quot;q2的欧拉角: &quot; + q2.eulerAngles + &quot; q2的rotation: &quot; + q2);
+   }
+
+   // Update is called once per frame
+   void Update () {
+
+   }</code></pre><pre><code>
+   结果：
+
+   ![](/show1.png)
+
+   从输出结果可以看出a1和a2的值相等，即Angle的返回值是两个Quaternion实例转换的最小夹角。
+
+2. ### Dot方法-点乘
+
+   ```c#
+   public static float Dot(Quaternion a,Quaternion b);</code></pre><p>   该方法可以根据点乘的结果，判断a和b对应欧拉角的关系。</p>
+<p>   例如有两个Quaternion实例q1(x1,y1,z1,w1)和q2(x2,y2,z2,w2)，则float f = Quaternion.Dot(q1,q2);即f = x1<em>x2+y1</em>y2+z1<em>z2+w1</em>w2，结果值f的范围为[-1,1]。</p>
+<p>   当f=+(-)1时，q1和q2对应的欧拉角是相等的，即旋转状态是一致的。特别地，当f = -1时，说明其中一个rotation比另外一个rotation多旋转了360°。</p>
+<p>   实例演示</p>
+<pre class=" language-c#"><code class="language-c#">   using UnityEngine;
+   using System.Collections;
+
+   public class Dot_ts : MonoBehaviour {
+
+       public Transform A, B;
+       Quaternion q1 = Quaternion.identity;
+       Quaternion q2 = Quaternion.identity;
+       // Use this for initialization
+       void Start () {
+
+           A.eulerAngles = new Vector3(0.0f, 40.0f, 0.0f);
+           B.eulerAngles = new Vector3(0.0f, 360.0f + 40.0f, 0.0f);
+           q1 = A.rotation;
+           q2 = B.rotation;
+           float f = Quaternion.Dot(q1, q2);
+
+           Debug.Log("q1的欧拉角: " + q1.eulerAngles + " q1的rotation: " + q1);
+           Debug.Log("q2的欧拉角: " + q2.eulerAngles + " q2的rotation: " + q2);
+           Debug.Log("Dot(q1,q2): " + f);
+       }
+
+       // Update is called once per frame
+       void Update () {
+
+       }
+   }</code></pre>
+<p>   输出:</p>
+<p>   <img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show2.png" alt></p>
+<ol start="3">
+<li><h3 id="Euler方法"><a href="#Euler方法" class="headerlink" title="Euler方法"></a>Euler方法</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion Euler(Vector3 euler);
+public static Quaternion Euler(float x,float y,float z);</code></pre>
+<p>该方法用于返回欧拉角Vector3(ex,ey,ez)对应的四元数Quaternion q(qx,qy,qz,qw)。其对应关系如下：</p>
+<p>已知PIover180 = 3.141592/180 = 0.0174532925f是计算机图形学中的一个常亮，其变换过程如下：</p>
+<pre class=" language-c#"><code class="language-c#">ex = ex * PIover180 / 2.0f;
+ey = ey * PIover180 / 2.0f;
+ez = ez * PIover180 / 2.0f;
+
+qx = Mathf.Sin(ex) * Mathf.Cos(ey) * Mathf.Cos(ez) + Mathf.Cos(ex) * Mathf.Sin(ey) * Mathf.Sin(ez);
+qy = Mathf.Cos(ex) * Mathf.Sin(ey) * Mathf.Cos(ez) - Mathf.Sin(ex) * Mathf.Cos(ey) * Mathf.Sin(ez);
+qz = Mathf.Cos(ex) * Mathf.Cos(ey) * Mathf.Sin(ez) - Mathf.Sin(ex) * Mathf.Sin(ey) * Mathf.Cos(ez);
+qw = Mathf.Cos(ex) * Mathf.Cos(ey) * Mathf.Cos(ez) + Mathf.Sin(ex) * Mathf.Sin(ey) * Mathf.Sin(ez);</code></pre>
+<p>验证变换过程</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class Euler_ts : MonoBehaviour {
+
+    public float ex, ey, ez;
+    float qx, qy, qz,qw;
+    float PIover180 = 0.0174532925f;
+    Quaternion q = Quaternion.identity;
+    Vector3 euler;
+
+    void OnGUI()
+    {
+        if(GUI.Button(new Rect(10.0f,10.0f,100.0f,45.0f),"计算"))
+        {
+            euler = new Vector3(ex,ey,ez);
+            Debug.Log("欧拉角Euler(ex,ey,ez): " + euler);
+            q = Quaternion.Euler(ex, ey, ez);
+            Debug.Log("对应的四元数为: " + q);
+            Debug.Log("q.x: " + q.x + " q.y: " + q.y + " q.z: " + q.z + " q.w: " + q.w);
+            //验证算法
+            ex = ex * PIover180 / 2.0f;
+            ey = ey * PIover180 / 2.0f;
+            ez = ez * PIover180 / 2.0f;
+
+            qx = Mathf.Sin(ex) * Mathf.Cos(ey) * Mathf.Cos(ez) + Mathf.Cos(ex) * Mathf.Sin(ey) * Mathf.Sin(ez);
+            qy = Mathf.Cos(ex) * Mathf.Sin(ey) * Mathf.Cos(ez) - Mathf.Sin(ex) * Mathf.Cos(ey) * Mathf.Sin(ez);
+            qz = Mathf.Cos(ex) * Mathf.Cos(ey) * Mathf.Sin(ez) - Mathf.Sin(ex) * Mathf.Sin(ey) * Mathf.Cos(ez);
+            qw = Mathf.Cos(ex) * Mathf.Cos(ey) * Mathf.Cos(ez) + Mathf.Sin(ex) * Mathf.Sin(ey) * Mathf.Sin(ez);
+            Debug.Log("qx: " + qx + " qy: " + qy + " qz: " + qz + " qw: " + qw);
+        }
+    }
+}</code></pre>
+<p>运行结果</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show3.png" alt></p>
+<p>从输出结果可以证明该公式是正确，另外转换后的四元数直接输出的话，如下：</p>
+<pre class=" language-c#"><code class="language-c#">q = Quaternion.Euler(ex, ey, ez);
+ Debug.Log("对应的四元数为: " + q);</code></pre>
+<p>输出的值是做了四舍五入处理的。</p>
+</li>
+</ol>
+<ol start="4">
+<li><h3 id="FromToRotation"><a href="#FromToRotation" class="headerlink" title="FromToRotation"></a>FromToRotation</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion FromToRotation(Vector3 fromDirection,Vector3 ToDirection);</code></pre>
+<p>在前面介绍了SetFromToRotation实例方法，它们的功能都是一样的只不过用法稍有不同。使用FromToRotation类静态方法，需要直接使用类名进行调用，如Quaternion.FromToRotation(v1,v2);</p>
+<p>在此就不做演示了！</p>
+</li>
+<li><h3 id="Inverse方法"><a href="#Inverse方法" class="headerlink" title="Inverse方法"></a>Inverse方法</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion Inverse(Quaternion rotation);</code></pre>
+<p>该方法可以返回参数rotation的逆向Quaternion值。</p>
+<p>例如rotation(x,y,z,w)，那么Quaternion.Inverse(rotation) = (-x,-y,-z,w)。假设rotation的欧拉角为(a,b,c)，则transform.rotation = Quaternion.Inverse(rotation)相当于transform依次绕自身坐标系的z轴、x轴和y轴分别旋转-c°、-a°和-z°。由于是在局部坐标系内的变换，最后transform的欧拉角的各个分量值并不一定等于-a、-b或-c。</p>
+<p>实例演示:</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class Invers_ts : MonoBehaviour {
+    public Transform A, B;
+
+    // Use this for initialization
+    void Start () {
+
+        Quaternion q1 = Quaternion.identity;
+        Quaternion q2 = Quaternion.identity;
+        q1.eulerAngles = new Vector3(30.0f,40.0f,50.0f);
+        q2 = Quaternion.Inverse(q1);
+        A.rotation = q1;
+        B.rotation = q2;
+
+        Debug.Log("q1的欧拉角: " + q1.eulerAngles + "q1的rotation: " + q1);
+        Debug.Log("q2的欧拉角: " + q2.eulerAngles + "q2的rotation: " + q2);
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+    }
+}
+</code></pre>
+</li>
+</ol>
+<ol start="6">
+<li><h3 id="Lerp和Slerp方法"><a href="#Lerp和Slerp方法" class="headerlink" title="Lerp和Slerp方法"></a>Lerp和Slerp方法</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion Lerp(Quaternion form, Quaternion to,float t);
+public static Quaternion Slerp(Quaternion form, Quaternion to,float t);</code></pre>
+<p>两种方法的作用都是返回从form到to的插值。当参数t&lt;=0时返回值为from，当参数t&gt;=1时返回值为to。其中Lerp是线性差值，而Slerp是球形插值。关于球形差值我会在另外一篇博客里面说。</p>
+<p>实例演示</p>
+<pre class=" language-c#"><code class="language-c#">
+using UnityEngine;
+using System.Collections;
+
+public class LerpAndSlerp_ts : MonoBehaviour
+{
+    public Transform A, B, C,D;
+    float speed = 0.2f;
+    float total = 0.0f;
+    // Use this for initialization
+    void Start () {
+
+    }
+
+    // Update is called once per frame
+    void Update () {
+        total += Time.deltaTime * speed;
+        if(total >= 1.0f)
+            total = 1.0f;
+        C.rotation = Quaternion.Lerp(A.rotation, B.rotation, total);
+        D.rotation = Quaternion.Lerp(A.rotation, B.rotation, total);
+        //C.rotation = Quaternion.Lerp(A.rotation, B.rotation, Time.deltaTime * speed);
+        //D.rotation = Quaternion.Lerp(A.rotation, B.rotation, Time.deltaTime * speed);
+    }
+
+}</code></pre>
+</li>
+<li><h3 id="RotateTowards"><a href="#RotateTowards" class="headerlink" title="RotateTowards"></a>RotateTowards</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion RotateTowards(Quaternion from, Quaternion to, float maxDegreesDelta);</code></pre>
+<p>该方法也是一个插值方法，即从返回参数from到to的插值，且返回值的最大角度不超过maxDegreesDelta。maxDegreesDelta是角度值，不是插值系数，当maxDegreesDelta &lt; 0时，将进行逆向插值即从to到from的方向进行插值计算。</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class RotateToWards_ts : MonoBehaviour {
+
+    public Transform A, B, C;
+    float speed = 10.0f;
+    float total = 0.0f;
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        total += Time.deltaTime * speed;
+        if (total >= 1.0f)
+            total = 1.0f;
+        C.rotation = Quaternion.RotateTowards(A.rotation, B.rotation, Time.time * speed - 40.0f);
+        Debug.Log("C与A的欧拉角的插值: " + (C.eulerAngles - A.eulerAngles) + "maxDegreesDelta: " + (Time.time * speed - 40.0f));
+
+    }
+}</code></pre>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show4.png" alt></p>
+</li>
+<li><h3 id="LookRotation"><a href="#LookRotation" class="headerlink" title="LookRotation"></a>LookRotation</h3><pre class=" language-c#"><code class="language-c#">public static Quaternion LookRotation(Vector3 forward);
+public static Quaternion LookRotation(Vector3 forward,Vector3 upwards);</code></pre>
+<p>参数forward为返回Quaternion实例的forward朝向。该方法和前面讲到的SetLookRotation实例方法的功能是一样的，故不多做阐述了。</p>
+</li>
+</ol>
+<h2 id="Quaternion类运算符"><a href="#Quaternion类运算符" class="headerlink" title="Quaternion类运算符"></a>Quaternion类运算符</h2><p>Quaternion类涉及到两个<strong>Quaternion对象</strong>相乘和<strong>Quaternion</strong>对象与<strong>Vector3</strong>对象相乘，那么就必须重载”*”运算符</p>
+<pre class=" language-c#"><code class="language-c#">public static Quaternion operator *(Quaternion lhs, Quaternion rhs);
+public static Vector3 operator *(Quaternion rotation, Vector3 point);</code></pre>
+<ul>
+<li><h3 id="两个Quaternion对象相乘"><a href="#两个Quaternion对象相乘" class="headerlink" title="两个Quaternion对象相乘"></a>两个Quaternion对象相乘</h3><p>对于两个Quaternion对象相乘主要用于自身旋转变换，例如：</p>
+<pre class=" language-c#"><code class="language-c#">B.rotation *= A.rotation;</code></pre>
+<ul>
+<li><p>B会绕着B的局部坐标系的z、x、y轴按照先绕z轴再绕x轴最后绕y轴的旋转次序，分别旋转A.eulerAngles.z度、A.eulerAngles.x度、和A.eulerAngles.y度。由于是绕着局部坐标系进行旋转，所以当绕着其中一个轴进行旋转时，可能会影响其余两个坐标轴方向的欧拉角（除非其余两轴的欧拉角都为0才不会受到影响）。</p>
+</li>
+<li><p>假如A的欧拉角为aEuler(ax,ay,az)，则沿着B的初始局部坐标系的aEuler方向向下看B在绕着aEuler顺时针旋转。B的旋转状况还受到其初始状态的影响。</p>
+<p>实例演示:</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+using System.Collections;
+
+public class Multiply1_ts : MonoBehaviour {
+
+    public Transform A, B;
+
+    // Use this for initialization
+    void Start () {
+
+        A.eulerAngles = new Vector3(1.0f, 1.5f, 2.0f);
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        B.rotation *= A.rotation;
+        Debug.Log(B.eulerAngles);
+    }
+}</code></pre>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show5.png" alt></p>
+<p>分析：B绕着其自身坐标系的Vector3(1.0f,1.5f,2.0f)方向旋转。虽然每次都绕着这个轴向旋转的角度相同，但角度的旋转在3个坐标轴的值都不为零，三个轴的旋转会相互影响，所以B的欧拉角的各个分量的每次递增是不固定的。</p>
+</li>
+</ul>
+</li>
+<li><h3 id="Quaternion对象与Vector3对象"><a href="#Quaternion对象与Vector3对象" class="headerlink" title="Quaternion对象与Vector3对象"></a>Quaternion对象与Vector3对象</h3><p>对于Quaternion对象与Vector3对象相乘主要用于自身移动变换，例如：</p>
+<pre class=" language-c#"><code class="language-c#">transform.position += tansform.rotation * A;</code></pre>
+<p>其中A为Vector3的对象。transform对应的对象会沿着自身坐标系中向量A的方向移动A的模长的距离。transform.rotation与A相乘可以确定移动的方向和距离。</p>
+<p>实例演示</p>
+<pre class=" language-c#"><code class="language-c#">
+using UnityEngine;
+using System.Collections;
+
+public class Multiply2_ts : MonoBehaviour {
+    public Transform A;
+    float speed = 0.1f;
+
+    // Use this for initialization
+    void Start () {
+
+        A.position = Vector3.zero;
+        A.eulerAngles = new Vector3(0.0f, 45.0f, 0.0f);
+    }
+
+    // Update is called once per frame
+    void Update () {
+
+        A.position += A.rotation * (Vector3.forward * speed);
+        Debug.Log(A.position);
+    }
+}</code></pre>
+<p>运行截图:</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show6.png" alt></p>
+</li>
+</ul>
+<ul>
+<li><h3 id="两个Quaternion对象相乘与Quaternion对象与Vector3对象相乘的异同"><a href="#两个Quaternion对象相乘与Quaternion对象与Vector3对象相乘的异同" class="headerlink" title="两个Quaternion对象相乘与Quaternion对象与Vector3对象相乘的异同"></a>两个Quaternion对象相乘与Quaternion对象与Vector3对象相乘的异同</h3><ul>
+<li>设A为两个两个Quaternion对象相乘的结果。B为Quaternion对象与Vector3对象相乘的结果。其中A为Quaternion类型，B为Vector3类型。</li>
+<li>A与B的相同之处是它们都通过自身坐标系的“相乘”方式来实现在世界坐标系中的变换。</li>
+<li>A主要用来实现transform绕自身坐标系的某个轴旋转，B主要用来实现transform沿着自身坐标系的某个方向移动。</li>
+<li>必须遵守Quaternion对象*Vector3对象的形式，不可以颠倒顺序。</li>
+</ul>
+<p>由于它们都是相对于自身坐标系进行的旋转或移动，所以当自身坐标系的轴向和世界坐标系的轴向不一致时，它们绕着自身坐标系中的某个轴向的变动都会影响到物体在世界坐标系中各个坐标轴的变动。</p>
+<p>　四元数quaternion的变换比较复杂，但是在unity中已经给我们写好了相应的函数实现对transform的操作。</p>
+<p>　　在最近的一个项目中，遇到了一个单手指滑动手机屏幕实现对模型的一个旋转操作，在尝试了各种unity中的旋转函数之后都没能够达到想要的效果之后，我选择了用Quaternion.AngleAxis的函数来实现旋转的操作效果。</p>
+<p>　　首先我们来分析一下Quaternion.AngleAxis(angle,axis)，参数angle和axis代表了物体的旋转角度和旋转轴心。如下图：红色箭头方向代表物体所围绕的旋转轴，旋转角度可以是自定义的。</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show7.jpg" alt></p>
+<p>接下来，我们就要做两件事情，确定axis和计算angle。在这个项目中，我们是根据单个手指在手机屏幕上滑动，我们通过记录滑动的距离，X方向的增量，以及Y轴方向的增量来为后面计算axis和angle打下基础。unity的Input函数有GetTouch这个函数，我们只需要调用这个函数的相关方法就可以实现需求。</p>
+<p>　　现在，我们在unity中新建一个场景，在场景中新建一个立方块。</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show8.png" alt></p>
+<p>注意立方块的世界坐标轴，Z轴的朝向应该是朝着摄像机的。根据之前对四元数脚本的分析，立方体的旋转脚本为：</p>
+<p>　　Gesture.cs:</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+ 2 using System.Collections;
+ 3 
+ 4 public class gesture : MonoBehaviour {
+ 5     public Transform Cube;
+ 6     private float radius = 1080;
+ 7     private Vector3 originalDir = new Vector3(0f,0f,1080f);
+ 8     private Vector3 CenterPos = new Vector3(0, 0, 0);
+ 9     private Vector2 startPos;
+10     private Vector2 tempPos;
+11     private Vector3 tempVec;
+12     private Vector3 normalAxis;
+13     private float angle;
+14     // Use this for initialization
+15     void Start () {
+16         Cube = GameObject.Find("Cube").transform;
+17     }
+18     
+19     // Update is called once per frame
+20     void Update () {
+21         if (Input.touchCount == 1)
+22         {
+23             //Vector2 startPos = Input.compositionCursorPos;
+24             if (Input.GetTouch(0).phase == TouchPhase.Began)
+25             {
+26                 startPos = Input.GetTouch(0).position;
+27                 //tempPos = startPos;
+28             }
+29             //if (Input.GetTouch(0).phase == TouchPhase.Ended)
+30             //{
+31             //    tempPos = startPos;
+32             //}
+33             if (Input.GetTouch(0).phase == TouchPhase.Moved)
+34             {
+35                 tempPos = Event.current.mousePosition;
+36 
+37                 float tempX = tempPos.x - startPos.x;
+38                     
+39                 float tempY = tempPos.y - startPos.y;
+40 
+41                 //tempPos = Input.GetTouch(0).deltaPosition;
+42                 //float tempX = tempPos.x;
+43 
+44                 //float tempY = tempPos.y;
+45 
+46                 float tempZ = Mathf.Sqrt(radius * radius - tempX * tempX - tempY * tempY);
+47 
+48                 tempVec = new Vector3(tempX, tempY, tempZ);
+49 
+50                 angle = Mathf.Acos(Vector3.Dot(originalDir.normalized, tempVec.normalized)) * Mathf.Rad2Deg;
+51 
+52                 normalAxis = getNormal(CenterPos, originalDir, tempVec);
+53 
+54                 Cube.rotation = Quaternion.AngleAxis(2 *angle, normalAxis);
+55 
+56             }
+57         }
+58     }
+59 
+60     void OnGUI()
+61     {
+62         GUILayout.Label("StartPos 的坐标值为： "+startPos);
+63         GUILayout.Label("tempPos 的坐标值为： " + tempPos);
+64         GUILayout.Label("tempVec 的坐标值为： " + tempVec);
+65         GUILayout.Label("normalAxis 的坐标值为： " + normalAxis);
+66         GUILayout.Label("旋转角度的值为： " + 2*angle);
+67         GUILayout.Label("Cube的四元数角度： " + Cube.rotation);
+68         GUILayout.Label("Cube de rotation.x： " + Cube.rotation.eulerAngles.x);
+69         GUILayout.Label("Cube de rotation.y： " + Cube.rotation.eulerAngles.y);
+70         GUILayout.Label("Cube de rotation.z： " + Cube.rotation.eulerAngles.z);
+71     }
+72 
+73     private Vector3 getNormal(Vector3 p1,Vector3 p2,Vector3 p3)
+74     {
+75         float a = ((p2.y - p1.y) * (p3.z - p1.z) - (p2.z - p1.z) * (p3.y - p1.y));
+76 
+77         float b = ((p2.z - p1.z) * (p3.x - p1.x) - (p2.x - p1.x) * (p3.z - p1.z));
+78 
+79         float c = ((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
+80         //a对应的屏幕的垂直方向，b对应的屏幕的水平方向。
+81         return new Vector3(a, -b, c);
+82     }
+83 }</code></pre>
+<p>如果我们将这个在新机上运行，会发现在第一次手指滑动旋转是正常的，但是第二次就会有个跳动的过程。在这里我们需要注意一个问题，四元数函数Quaternion.AngleAxis是将立方体以初始的旋转角度来进行围绕着轴Axis旋转Angle角度，不是在上一个状态下的增量。如果需要延续上一次的旋转状态，就需要将这个物体的rotation恢复到初始的状态。按照这个思路，我在Cube添加了一个父对象，我们在操作的时候对这个父对象进行操作，然后手指在离开屏幕的时候，将Cube脱离父对象，然后将父对象的rotation进行还原，再将Cube绑定为父物体的子对象，在一下次手指旋转之后就会接着上一次的旋转状态进行旋转，实现了旋转的延续。</p>
+<p><img src="/2020/01/07/you-xi-zhong-de-si-yuan-shu/show9.png" alt></p>
+<p>实现的代码为：</p>
+<pre class=" language-c#"><code class="language-c#">using UnityEngine;
+ 2 using System.Collections;
+ 3 
+ 4 public class gesture : MonoBehaviour {
+ 5     public Transform Cube;
+ 6     public Transform RotObj;
+ 7     private float radius = 1080;
+ 8     private Vector3 originalDir = new Vector3(0f,0f,1080f);
+ 9     private Vector3 CenterPos = new Vector3(0, 0, 0);
+10     private Vector2 startPos;
+11     private Vector2 tempPos;
+12     private Vector3 tempVec;
+13     private Vector3 normalAxis;
+14     private float angle;
+15     // Use this for initialization
+16     void Start () {
+17         Cube = GameObject.Find("Cube").transform;
+18     }
+19     
+20     // Update is called once per frame
+21     void Update () {
+22         if (Input.touchCount == 1)
+23         {
+24             //Vector2 startPos = Input.compositionCursorPos;
+25             if (Input.GetTouch(0).phase == TouchPhase.Began)
+26             {
+27                 startPos = Input.GetTouch(0).position;
+28             }
+29             if (Input.GetTouch(0).phase == TouchPhase.Moved)
+30             {
+31                 tempPos = Event.current.mousePosition;
+32 
+33                 float tempX = tempPos.x - startPos.x;
+34                     
+35                 float tempY = tempPos.y - startPos.y;
+36 
+37                 float tempZ = Mathf.Sqrt(radius * radius - tempX * tempX - tempY * tempY);
+38 
+39                 tempVec = new Vector3(tempX, tempY, tempZ);
+40 
+41                 angle = Mathf.Acos(Vector3.Dot(originalDir.normalized, tempVec.normalized)) * Mathf.Rad2Deg;
+42 
+43                 normalAxis = getNormal(CenterPos, originalDir, tempVec);
+44 
+45                 RotObj.rotation = Quaternion.AngleAxis(2 *angle, normalAxis);
+46 
+47             }
+48             if (Input.GetTouch(0).phase == TouchPhase.Ended)
+49             {
+50                 Cube.transform.parent = null;
+51                 RotObj.rotation = Quaternion.identity;
+52                 Cube.parent = RotObj;
+53             }
+54         }
+55     }
+56 
+57     void OnGUI()
+58     {
+59         GUILayout.Label("StartPos 的坐标值为： "+startPos);
+60         GUILayout.Label("tempPos 的坐标值为： " + tempPos);
+61         GUILayout.Label("tempVec 的坐标值为： " + tempVec);
+62         GUILayout.Label("normalAxis 的坐标值为： " + normalAxis);
+63         GUILayout.Label("旋转角度的值为： " + 2*angle);
+64         GUILayout.Label("Cube的四元数角度： " + Cube.rotation);
+65         GUILayout.Label("Cube de rotation.x： " + Cube.rotation.eulerAngles.x);
+66         GUILayout.Label("Cube de rotation.y： " + Cube.rotation.eulerAngles.y);
+67         GUILayout.Label("Cube de rotation.z： " + Cube.rotation.eulerAngles.z);
+68     }
+69 
+70     private Vector3 getNormal(Vector3 p1,Vector3 p2,Vector3 p3)
+71     {
+72         float a = ((p2.y - p1.y) * (p3.z - p1.z) - (p2.z - p1.z) * (p3.y - p1.y));
+73 
+74         float b = ((p2.z - p1.z) * (p3.x - p1.x) - (p2.x - p1.x) * (p3.z - p1.z));
+75 
+76         float c = ((p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x));
+77         //a对应的屏幕的垂直方向，b对应的屏幕的水平方向。
+78         return new Vector3(a, -b, c);
+79     }
+80 }</code></pre>
+<p>现在对应着手指的滑动距离，然后调整参数radius，就可以实现比较顺滑的旋转效果，真机实现的效果就不展示了。</p>
+</li>
+</ul>
+<p>老实说，图形学里面数学部分比较难懂的四元数应该算是一个，嗯，就到这吧。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn" rel="external nofollow noreferrer">慕谦</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn/2020/01/07/you-xi-zhong-de-si-yuan-shu/">http://www.rubyboy.cn/2020/01/07/you-xi-zhong-de-si-yuan-shu/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Unity/">
+                                    <span class="chip bg-color">Unity</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">
+                                    <span class="chip bg-color">游戏开发</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/">
+                                    <span class="chip bg-color">图形学</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">赞赏是不耍流氓的鼓励</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/01/10/go-chang-yong-yu-fa-tang-pao-dan-gong-ju-ji/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Go常用语法糖炮弹工具集">
+                        
+                        <span class="card-title">Go常用语法糖炮弹工具集</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+关于GoGo语言虽然说是C族语言，也被调侃为21世纪网络C语言，但是Go不得不说它是一种简单到特立独行的语言。
+var age int
+name := "小鬼 Boy"
+万种风流，都放在类型后面的，它放在前面..
+type Animal 
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Go/">
+                        <span class="chip bg-color">Go</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/01/07/nginx-an-zhuang/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="Nginx服务器之一 安装">
+                        
+                        <span class="card-title">Nginx服务器之一 安装</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            ​                      
+
+Nginx是一款轻量级的Web 服务器反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，是一个高性能的HTTP和反向代
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Go/">
+                        <span class="chip bg-color">Go</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                    <a href="/tags/Ngix/">
+                        <span class="chip bg-color">Ngix</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+            |&nbsp;Powered by&nbsp;<a href="https:www.rubyboy.cn" target="_blank">慕谦小客栈</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">51.6k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/NielJun" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:769288695@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=769288695" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 769288695" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" color="0,0,255"
+        pointColor="0,0,255" opacity='0.7'
+        zIndex="-1" count="99"
+        src="/libs/background/canvas-nest.js"></script>
+    
+
+    
+    
+    <script type="text/javascript" size="150" alpha='0.6'
+        zIndex="-1" src="/libs/background/ribbon-refresh.min.js" async="async"></script>
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

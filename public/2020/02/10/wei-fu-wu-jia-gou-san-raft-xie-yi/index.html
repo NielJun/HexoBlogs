@@ -1,0 +1,1509 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="微服务架构[三] Raft协议, 小客栈">
+    <meta name="description" content="微服务架构 之 Raft协议使用场景
+​    解决分布式系统一致性的问题
+​    基于复制的方式
+
+工作机制
+Leader选举
+日志复制
+安全性
+
+角色
+Follower 角色
+Leader 角色
+Candicate 角色
+
+任期( T">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>微服务架构[三] Raft协议 | 小客栈</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小客栈</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小客栈</div>
+        <div class="logo-desc">
+            
+              今日长缨在手，何时缚住苍龙？
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Nieljun" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Git
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Nieljun" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Git" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">微服务架构[三] Raft协议</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Go/">
+                                <span class="chip bg-color">Go</span>
+                            </a>
+                        
+                            <a href="/tags/Micro-Service/">
+                                <span class="chip bg-color">Micro Service</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+                                <span class="chip bg-color">微服务</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                Go栈
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-02-10
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="微服务架构-之-Raft协议"><a href="#微服务架构-之-Raft协议" class="headerlink" title="微服务架构 之 Raft协议"></a>微服务架构 之 Raft协议</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li>​    解决分布式系统一致性的问题</li>
+<li>​    基于复制的方式</li>
+</ul>
+<h3 id="工作机制"><a href="#工作机制" class="headerlink" title="工作机制"></a>工作机制</h3><ul>
+<li>Leader选举</li>
+<li>日志复制</li>
+<li>安全性</li>
+</ul>
+<h3 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h3><ul>
+<li>Follower 角色</li>
+<li>Leader 角色</li>
+<li>Candicate 角色</li>
+</ul>
+<h3 id="任期-Term-概念"><a href="#任期-Term-概念" class="headerlink" title="任期( Term ) 概念"></a>任期( Term ) 概念</h3><p>在raft协议中，将时间分为一个个 term（任期），每一个任期内都可正常操作。但是如果主节点挂掉则必须通过选举才可以进行Leader节点的选择。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/5.png" alt></p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/6.png" alt></p>
+<ul>
+<li>Raft 把时间分割成任意长度的任期（term），如图 5 所示。任期用连续的整数标记。</li>
+<li>每一段任期从一次选举开始，一个或者多个 candidate 尝试成为 leader 。如果一个 candidate 赢得选举，然后他就在该任期剩下的时间里充当 leader 。在某些情况下，一次选举无法选出 leader 。在这种情况下，这一任期会以没有 leader 结束；一个新的任期（包含一次新的选举）会很快重新开始。</li>
+<li>Raft 保证了在任意一个任期内，最多只有一个 leader</li>
+</ul>
+<p>个人理解：</p>
+<ul>
+<li>在raft算法中，比较谁的数据最新有2个参考指标，任期和logIndex，任期大的节点，数据一定最新，任期一样的话，就要比较该任期内谁的MaxLogIndex最大了。引入任期的概念可以简化数据比较的精度。</li>
+</ul>
+<h3 id="任期的作用"><a href="#任期的作用" class="headerlink" title="任期的作用"></a>任期的作用</h3><ul>
+<li>不同的服务器节点观察到的任期转换的次数可能不同，在某些情况下，一个服务器节点可能没有看到 leader 选举过程或者甚至整个任期全程。</li>
+<li>任期在 Raft 算法中充当逻辑时钟的作用，这使得服务器节点可以发现一些过期的信息比如过时的 leader 。</li>
+<li>每一个服务器节点存储一个当前任期号，该编号随着时间单调递增。</li>
+<li>服务器之间通信的时候会交换当前任期号；</li>
+<li>如果一个服务器的当前任期号比其他的小，该服务器会将自己的任期号更新为较大的那个值。</li>
+<li>如果一个 candidate 或者 leader 发现自己的任期号过期了，它会立即回到 follower 状态。（所以说老leader如果发生了网络分区，后来接收到新leader的心跳的时候，比拼完任期之后，会自动变成follower。</li>
+<li>如果一个节点接收到一个包含过期的任期号的请求，它会直接拒绝这个请求</li>
+</ul>
+<h3 id="状态机复制"><a href="#状态机复制" class="headerlink" title="状态机复制"></a>状态机复制</h3><p>其实很简单，通过每个节点执行一样的命令序列，则最终会得到相同的状态，Raft就是通过状态机的方式来达到一致性的效果。</p>
+<h3 id="心跳和超时机制"><a href="#心跳和超时机制" class="headerlink" title="心跳和超时机制"></a>心跳和超时机制</h3><p>raft使用两个timeout机制来控制leader的选举，当选举完成后，leader会向所有的从节点发心跳包确认存活，再Leader挂掉的时候，操作是不可用的。</p>
+<p>Raft的Heartbeat是leader在选举成功后巩固自己地位和同步信息的一种方式，日志的复制大多数情况下适合Heartbeat是同步进行的。当一个raft节点选举成为leader后，该节点周期性执行的tick函数指向了raft.tickHeartbeat，对于leader而言主要是通知follower自己还活着，与此同时leader在收到follower对Heartbeat的响应之后，又会向日志比较落后的follower发送追加日志请求，进行log replication。</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">tickHeartbeat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span>heartbeatElapsed<span class="token operator">++</span>
+    <span class="token comment" spellcheck="true">// ... </span>
+
+    <span class="token comment" spellcheck="true">// 如果心跳计时超过了心跳包的发送间隔，就进入发送心跳包流程，并重置心跳计时</span>
+    <span class="token keyword">if</span> r<span class="token punctuation">.</span>heartbeatElapsed <span class="token operator">>=</span> r<span class="token punctuation">.</span>heartbeatTimeout <span class="token punctuation">{</span>
+        r<span class="token punctuation">.</span>heartbeatElapsed <span class="token operator">=</span> <span class="token number">0</span> 
+        r<span class="token punctuation">.</span><span class="token function">Step</span><span class="token punctuation">(</span>pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>From<span class="token punctuation">:</span> r<span class="token punctuation">.</span>id<span class="token punctuation">,</span> Type<span class="token punctuation">:</span> pb<span class="token punctuation">.</span>MsgBeat<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>   
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">Step</span><span class="token punctuation">(</span>m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token builtin">error</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// ...</span>
+
+    <span class="token comment" spellcheck="true">// Step最终调用raft.step变量指向的函数</span>
+    <span class="token comment" spellcheck="true">// 现阶段当前节点处于leader状态，所以step指向stepLeader </span>
+    r<span class="token punctuation">.</span><span class="token function">step</span><span class="token punctuation">(</span>r<span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token boolean">nil</span> 
+<span class="token punctuation">}</span></code></pre>
+<p>stepLeader中心跳发送代码相关执行流程如下：</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">stepLeader</span><span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">,</span> m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">switch</span> m<span class="token punctuation">.</span>Type <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> pb<span class="token punctuation">.</span>MsgBeat：
+        <span class="token comment" spellcheck="true">// 把心跳包广播出去</span>
+        r<span class="token punctuation">.</span><span class="token function">bcastHeartbeat</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span>
+    <span class="token comment" spellcheck="true">// ...</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 在bcastHeartbeat中循环的把心跳包发送出去</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">bcastHeartbeat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> id <span class="token operator">:=</span> <span class="token keyword">range</span> r<span class="token punctuation">.</span>prs <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> id <span class="token operator">==</span> r<span class="token punctuation">.</span>id <span class="token punctuation">{</span>
+            <span class="token keyword">continue</span>
+        <span class="token punctuation">}</span>
+        r<span class="token punctuation">.</span><span class="token function">sendHeartbeat</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+        r<span class="token punctuation">.</span>prs<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">resume</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">sendHeartbeat</span><span class="token punctuation">(</span>to <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// r.raftLog.committed 已经拷贝到大多数节点上的日志index</span>
+    <span class="token comment" spellcheck="true">// r.prs[to].Match拷贝到to这个节点的日志最大下标</span>
+    commit <span class="token operator">:=</span> <span class="token function">min</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>prs<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">.</span>Match<span class="token punctuation">,</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span>committed<span class="token punctuation">)</span>
+    m <span class="token operator">:=</span> pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>
+        To<span class="token punctuation">:</span>     to<span class="token punctuation">,</span>
+        Type<span class="token punctuation">:</span>   pb<span class="token punctuation">.</span>MsgHeartbeat<span class="token punctuation">,</span>
+        Commit<span class="token punctuation">:</span> commit<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">//把心跳包发送出去</span>
+    r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>follower在收到心跳包之后，最终处理心跳的包的流程会通过Step-&gt;step-&gt;stepFollower:</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">stepFollower</span><span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">,</span> m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">switch</span> m<span class="token punctuation">.</span>Type <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> pb<span class="token punctuation">.</span>MsgHeartbeat<span class="token punctuation">:</span>
+        r<span class="token punctuation">.</span>electionElapsed <span class="token operator">=</span> <span class="token number">0</span>
+        r<span class="token punctuation">.</span>lead <span class="token operator">=</span> m<span class="token punctuation">.</span>From
+        r<span class="token punctuation">.</span><span class="token function">handleHeartbeat</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span>
+    <span class="token keyword">case</span> <span class="token comment" spellcheck="true">//...</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 更新本地可以提交的日志的最大下标，然后返回响应</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">handleHeartbeat</span><span class="token punctuation">(</span>m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">commitTo</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Commit<span class="token punctuation">)</span>
+    r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>To<span class="token punctuation">:</span> m<span class="token punctuation">.</span>From<span class="token punctuation">,</span> Type<span class="token punctuation">:</span> pb<span class="token punctuation">.</span>MsgHeartbeatResp<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>leader的心跳响应收到之后处理流程依旧会通过Step-&gt;step-&gt;stepLeader:</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">stepLeader</span><span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">,</span> m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">switch</span> m<span class="token punctuation">.</span>Type <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token keyword">case</span> pb<span class="token punctuation">.</span>MsgHeartbeatResp<span class="token punctuation">:</span>
+        pr<span class="token punctuation">.</span>RecentActive <span class="token operator">=</span> <span class="token boolean">true</span>
+
+        <span class="token comment" spellcheck="true">// free one slot for the full inflights window to allow progress.</span>
+        <span class="token keyword">if</span> pr<span class="token punctuation">.</span>State <span class="token operator">==</span> ProgressStateReplicate <span class="token operator">&amp;&amp;</span> pr<span class="token punctuation">.</span>ins<span class="token punctuation">.</span><span class="token function">full</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            pr<span class="token punctuation">.</span>ins<span class="token punctuation">.</span><span class="token function">freeFirstOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 检查是否还有日志没有拷贝到当前follower，如果有待发送的日志，通过sendAppend发送过去。</span>
+        <span class="token keyword">if</span> pr<span class="token punctuation">.</span>Match <span class="token operator">&lt;</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">lastIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            r<span class="token punctuation">.</span><span class="token function">sendAppend</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>From<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">case</span> <span class="token comment" spellcheck="true">//...</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>sendAppend函数的实现如下：</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">sendAppend</span><span class="token punctuation">(</span>to <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    pr <span class="token operator">:=</span> r<span class="token punctuation">.</span>prs<span class="token punctuation">[</span>to<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> pr<span class="token punctuation">.</span><span class="token function">isPaused</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    m <span class="token operator">:=</span> pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span><span class="token punctuation">}</span>
+    m<span class="token punctuation">.</span>To <span class="token operator">=</span> to
+    <span class="token comment" spellcheck="true">// 给该follower发送的最后一条日志的term</span>
+    term<span class="token punctuation">,</span> errt <span class="token operator">:=</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">term</span><span class="token punctuation">(</span>pr<span class="token punctuation">.</span>Next <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">// 即将要发送给该follower的日志条目</span>
+    ents<span class="token punctuation">,</span> erre <span class="token operator">:=</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>pr<span class="token punctuation">.</span>Next<span class="token punctuation">,</span> r<span class="token punctuation">.</span>maxMsgSize<span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">// 如果待发送给follower已经写到snap里面，在raftlog里面无法找到</span>
+    <span class="token keyword">if</span> errt <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token operator">||</span> erre <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// send snapshot if we failed to get term or entries</span>
+        <span class="token keyword">if</span> <span class="token operator">!</span>pr<span class="token punctuation">.</span>RecentActive <span class="token punctuation">{</span>
+            r<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Debugf</span><span class="token punctuation">(</span><span class="token string">"ignore sending snapshot to %x since it is not recently active"</span><span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+            <span class="token keyword">return</span>
+        <span class="token punctuation">}</span>
+
+        m<span class="token punctuation">.</span>Type <span class="token operator">=</span> pb<span class="token punctuation">.</span>MsgSnap
+        snapshot<span class="token punctuation">,</span> err <span class="token operator">:=</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">snapshot</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> err <span class="token operator">==</span> ErrSnapshotTemporarilyUnavailable <span class="token punctuation">{</span>
+                r<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Debugf</span><span class="token punctuation">(</span><span class="token string">"%x failed to send snapshot to %x because snapshot is temporarily unavailable"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span>id<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+                <span class="token keyword">return</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">panic</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// TODO(bdarnell)</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token function">IsEmptySnap</span><span class="token punctuation">(</span>snapshot<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">panic</span><span class="token punctuation">(</span><span class="token string">"need non-empty snapshot"</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        m<span class="token punctuation">.</span>Snapshot <span class="token operator">=</span> snapshot
+        sindex<span class="token punctuation">,</span> sterm <span class="token operator">:=</span> snapshot<span class="token punctuation">.</span>Metadata<span class="token punctuation">.</span>Index<span class="token punctuation">,</span> snapshot<span class="token punctuation">.</span>Metadata<span class="token punctuation">.</span>Term
+        r<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Debugf</span><span class="token punctuation">(</span><span class="token string">"%x [firstindex: %d, commit: %d] sent snapshot[index: %d, term: %d] to %x [%s]"</span><span class="token punctuation">,</span>
+            r<span class="token punctuation">.</span>id<span class="token punctuation">,</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">firstIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span>committed<span class="token punctuation">,</span> sindex<span class="token punctuation">,</span> sterm<span class="token punctuation">,</span> to<span class="token punctuation">,</span> pr<span class="token punctuation">)</span>
+        pr<span class="token punctuation">.</span><span class="token function">becomeSnapshot</span><span class="token punctuation">(</span>sindex<span class="token punctuation">)</span>
+        r<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Debugf</span><span class="token punctuation">(</span><span class="token string">"%x paused sending replication messages to %x [%s]"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span>id<span class="token punctuation">,</span> to<span class="token punctuation">,</span> pr<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        m<span class="token punctuation">.</span>Type <span class="token operator">=</span> pb<span class="token punctuation">.</span>MsgApp
+        m<span class="token punctuation">.</span>Index <span class="token operator">=</span> pr<span class="token punctuation">.</span>Next <span class="token operator">-</span> <span class="token number">1</span>
+        m<span class="token punctuation">.</span>LogTerm <span class="token operator">=</span> term
+        m<span class="token punctuation">.</span>Entries <span class="token operator">=</span> ents
+        <span class="token comment" spellcheck="true">// leader记录的最大的已经copy到大多数节点上的日志下标</span>
+        m<span class="token punctuation">.</span>Commit <span class="token operator">=</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span>committed
+        <span class="token keyword">if</span> n <span class="token operator">:=</span> <span class="token function">len</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Entries<span class="token punctuation">)</span><span class="token punctuation">;</span> n <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+            <span class="token keyword">switch</span> pr<span class="token punctuation">.</span>State <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// optimistically increase the next when in ProgressStateReplicate</span>
+            <span class="token keyword">case</span> ProgressStateReplicate<span class="token punctuation">:</span>
+                last <span class="token operator">:=</span> m<span class="token punctuation">.</span>Entries<span class="token punctuation">[</span>n<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>Index
+                pr<span class="token punctuation">.</span><span class="token function">optimisticUpdate</span><span class="token punctuation">(</span>last<span class="token punctuation">)</span>
+                pr<span class="token punctuation">.</span>ins<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>last<span class="token punctuation">)</span>
+            <span class="token keyword">case</span> ProgressStateProbe<span class="token punctuation">:</span>
+                pr<span class="token punctuation">.</span><span class="token function">pause</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">default</span><span class="token punctuation">:</span>
+                r<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Panicf</span><span class="token punctuation">(</span><span class="token string">"%x is sending append in unhandled state %s"</span><span class="token punctuation">,</span> r<span class="token punctuation">.</span>id<span class="token punctuation">,</span> pr<span class="token punctuation">.</span>State<span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>m<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>follower在收到leader发送过来的追加日志请求时，会通过handleAppendEntries去处理消息：</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">)</span> <span class="token function">handleAppendEntries</span><span class="token punctuation">(</span>m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// r.raftLog.committed实在当前节点已经提交的日志</span>
+    <span class="token comment" spellcheck="true">// m.Index为leader发送给该follower的上一条日志索引</span>
+    <span class="token comment" spellcheck="true">// m.Index &lt; r.raftLog.committed情况多出现在刚刚选出的leader向follower拷贝日志，leader本地还未记录向该follower拷贝了多少日志</span>
+    <span class="token comment" spellcheck="true">// 出现这种请求leader会把自己已经提交的日志的最大下标发送给leader，下次leader就会从r.raftLog.committed + 1开始发送日志</span>
+    <span class="token keyword">if</span> m<span class="token punctuation">.</span>Index <span class="token operator">&lt;</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span>committed <span class="token punctuation">{</span>
+        r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>To<span class="token punctuation">:</span> m<span class="token punctuation">.</span>From<span class="token punctuation">,</span> Type<span class="token punctuation">:</span> pb<span class="token punctuation">.</span>MsgAppResp<span class="token punctuation">,</span> Index<span class="token punctuation">:</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span>committed<span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// leader拷贝日志有可能在follower已经存在，所以要先找到相对与follower日志比较新的日志下标</span>
+    <span class="token keyword">if</span> mlastIndex<span class="token punctuation">,</span> ok <span class="token operator">:=</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">maybeAppend</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Index<span class="token punctuation">,</span> m<span class="token punctuation">.</span>LogTerm<span class="token punctuation">,</span> m<span class="token punctuation">.</span>Commit<span class="token punctuation">,</span> m<span class="token punctuation">.</span>Entries<span class="token operator">...</span><span class="token punctuation">)</span><span class="token punctuation">;</span> ok <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 当leader发送过来的上次发送给该follower的最后一条日志信息与follower本地储存的无冲突时，</span>
+        <span class="token comment" spellcheck="true">// 返回follower本地已经写入的最大日志下标，下次leader就会从该下标发送日志，并会更新leader记录的该follower的日志发送信息</span>
+        r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>To<span class="token punctuation">:</span> m<span class="token punctuation">.</span>From<span class="token punctuation">,</span> Type<span class="token punctuation">:</span> pb<span class="token punctuation">.</span>MsgAppResp<span class="token punctuation">,</span> Index<span class="token punctuation">:</span> mlastIndex<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 最后leader发送过来的最后一条日志的index，term等信息与follower本地记录的不一样</span>
+        r<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span>pb<span class="token punctuation">.</span>Message<span class="token punctuation">{</span>To<span class="token punctuation">:</span> m<span class="token punctuation">.</span>From<span class="token punctuation">,</span> Type<span class="token punctuation">:</span> pb<span class="token punctuation">.</span>MsgAppResp<span class="token punctuation">,</span> Index<span class="token punctuation">:</span> m<span class="token punctuation">.</span>Index<span class="token punctuation">,</span> Reject<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> RejectHint<span class="token punctuation">:</span> r<span class="token punctuation">.</span>raftLog<span class="token punctuation">.</span><span class="token function">lastIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token punctuation">(</span>l <span class="token operator">*</span>raftLog<span class="token punctuation">)</span> <span class="token function">maybeAppend</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> logTerm<span class="token punctuation">,</span> committed <span class="token builtin">uint64</span><span class="token punctuation">,</span> ents <span class="token operator">...</span>pb<span class="token punctuation">.</span>Entry<span class="token punctuation">)</span> <span class="token punctuation">(</span>lastnewi <span class="token builtin">uint64</span><span class="token punctuation">,</span> ok <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    lastnewi <span class="token operator">=</span> index <span class="token operator">+</span> <span class="token function">uint64</span><span class="token punctuation">(</span><span class="token function">len</span><span class="token punctuation">(</span>ents<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> l<span class="token punctuation">.</span><span class="token function">matchTerm</span><span class="token punctuation">(</span>index<span class="token punctuation">,</span> logTerm<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 找到leader发送给follower的第一条新日志的位置</span>
+        ci <span class="token operator">:=</span> l<span class="token punctuation">.</span><span class="token function">findConflict</span><span class="token punctuation">(</span>ents<span class="token punctuation">)</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 说明leader拷贝过来的日志都在follower的raftlog里面有记录</span>
+        <span class="token keyword">case</span> ci <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true">// 日志冲突的下标小于follower本地已经提交的日志，出现bug了</span>
+        <span class="token keyword">case</span> ci <span class="token operator">&lt;=</span> l<span class="token punctuation">.</span>committed<span class="token punctuation">:</span>
+            l<span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">Panicf</span><span class="token punctuation">(</span><span class="token string">"entry %d conflict with committed entry [committed(%d)]"</span><span class="token punctuation">,</span> ci<span class="token punctuation">,</span> l<span class="token punctuation">.</span>committed<span class="token punctuation">)</span>
+        <span class="token keyword">default</span><span class="token punctuation">:</span>
+           <span class="token comment" spellcheck="true">// 把leader拷贝过来的新日志写入follower本地</span>
+            offset <span class="token operator">:=</span> index <span class="token operator">+</span> <span class="token number">1</span> 
+            l<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>ents<span class="token punctuation">[</span>ci<span class="token operator">-</span>offset<span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token operator">...</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        l<span class="token punctuation">.</span><span class="token function">commitTo</span><span class="token punctuation">(</span><span class="token function">min</span><span class="token punctuation">(</span>committed<span class="token punctuation">,</span> lastnewi<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true">// 返回follower本地最新的日志记录index</span>
+        <span class="token keyword">return</span> lastnewi<span class="token punctuation">,</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>   
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span></code></pre>
+<p>leader收到的follower对日志追加请求的响应主要有两种：follower拒绝追加日志，follower追加0-n条日志，相关响应的处理代码如下:</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">stepLeader</span><span class="token punctuation">(</span>r <span class="token operator">*</span>raft<span class="token punctuation">,</span> m pb<span class="token punctuation">.</span>Message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// ...</span>
+    <span class="token keyword">switch</span> m<span class="token punctuation">.</span>Type <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> pb<span class="token punctuation">.</span>MsgAppResp<span class="token punctuation">:</span>
+        pr<span class="token punctuation">.</span>RecentActive <span class="token operator">=</span> <span class="token boolean">true</span>
+
+        <span class="token keyword">if</span> m<span class="token punctuation">.</span>Reject <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 拒绝追加日志</span>
+            <span class="token comment" spellcheck="true">// follower拒绝追加日志时都会返回一个RejectHint，RejectHint表示当前follower最后一条日志的index</span>
+            <span class="token comment" spellcheck="true">// maybeDecrTo函数在follower为ProgressStateReplicate状态是会把pr[to].Next设置为pr[to].Match + 1，否者会设置为被设置为m.Index、m.RejectHint中较小的一个，然后继续尝试发送。</span>
+            <span class="token keyword">if</span> pr<span class="token punctuation">.</span><span class="token function">maybeDecrTo</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Index<span class="token punctuation">,</span> m<span class="token punctuation">.</span>RejectHint<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> pr<span class="token punctuation">.</span>State <span class="token operator">==</span> ProgressStateReplicate <span class="token punctuation">{</span>
+                    pr<span class="token punctuation">.</span><span class="token function">becomeProbe</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">}</span>
+                r<span class="token punctuation">.</span><span class="token function">sendAppend</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>From<span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            oldPaused <span class="token operator">:=</span> pr<span class="token punctuation">.</span><span class="token function">isPaused</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token comment" spellcheck="true">// 如果又在follower上追加日志，更新以下两个下标:</span>
+            <span class="token comment" spellcheck="true">// （1）follower已经和leader一致的最大日志下标:pr[to].Match = m.Index</span>
+            <span class="token comment" spellcheck="true">// （2）下一条需要拷贝给该follower的日志下标:pr[to].Next = m.Index + 1</span>
+            <span class="token keyword">if</span> pr<span class="token punctuation">.</span><span class="token function">maybeUpdate</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Index<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">switch</span> <span class="token punctuation">{</span>
+                <span class="token keyword">case</span> pr<span class="token punctuation">.</span>State <span class="token operator">==</span> ProgressStateProbe<span class="token punctuation">:</span>
+                    pr<span class="token punctuation">.</span><span class="token function">becomeReplicate</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token keyword">case</span> pr<span class="token punctuation">.</span>State <span class="token operator">==</span> ProgressStateSnapshot <span class="token operator">&amp;&amp;</span> pr<span class="token punctuation">.</span><span class="token function">maybeSnapshotAbort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                    pr<span class="token punctuation">.</span><span class="token function">becomeProbe</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token keyword">case</span> pr<span class="token punctuation">.</span>State <span class="token operator">==</span> ProgressStateReplicate<span class="token punctuation">:</span>
+                    pr<span class="token punctuation">.</span>ins<span class="token punctuation">.</span><span class="token function">freeTo</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>Index<span class="token punctuation">)</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment" spellcheck="true">// 如果该follower有追加成功的日志，可能会出现新的日志条目拷贝到大多数raft节点上，</span>
+                <span class="token comment" spellcheck="true">// 因此leader更新本地raftlog.commitid，然后通过bcastAppend把新更新的commit(如果follower日志落后于leader，可能携带日志)广播给follower，</span>
+                <span class="token comment" spellcheck="true">// follower更新本地已经提交到大多数机器上的日志下标，本地小于commit未apply的日志就可以apply了</span>
+                <span class="token keyword">if</span> r<span class="token punctuation">.</span><span class="token function">maybeCommit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    r<span class="token punctuation">.</span><span class="token function">bcastAppend</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> oldPaused <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// update() reset the wait state on this node. If we had delayed sending</span>
+                    <span class="token comment" spellcheck="true">// an update before, send it now.</span>
+                    r<span class="token punctuation">.</span><span class="token function">sendAppend</span><span class="token punctuation">(</span>m<span class="token punctuation">.</span>From<span class="token punctuation">)</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token keyword">case</span> <span class="token comment" spellcheck="true">// ...</span>
+<span class="token punctuation">}</span></code></pre>
+<h3 id="Leader选举"><a href="#Leader选举" class="headerlink" title="Leader选举"></a>Leader选举</h3><h4 id="触发条件"><a href="#触发条件" class="headerlink" title="触发条件"></a>触发条件</h4><ul>
+<li>一般条件下，追随者接到领导者的心跳的时候，把选举定时器清零，不会触发</li>
+<li>最随着的选举定时器超时发生时（比如Leader故障了），那从节点会变成候选者，触发领导人选举</li>
+</ul>
+<h4 id="选举过程"><a href="#选举过程" class="headerlink" title="选举过程"></a>选举过程</h4><ul>
+<li>一开始，所有节点都是以Follow角色启动，同时启动选举定时器（时间随机，降低冲突概率）</li>
+<li>当定时器到期的时候，转为候选人角色【candicate】</li>
+<li>把当前任期+1并且为自己投票</li>
+<li>发起RequestVote的RPC请求，要求其他节点为自己投票</li>
+<li>如果得到办事以上的节点同意，自己称为Leader</li>
+<li>如果选举超时，还没有Leader产生，则进入下一任期，重新选举</li>
+</ul>
+<h4 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h4><p>假定这样一个情况，1号节点作为Leader在同步完成3号以后，在对2号同步数据的时候挂掉了，那如果2号 [未携带合法数据] 参与选举则会引起错误。所以必须规避这些问题。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/7.png" alt></p>
+<ul>
+<li>每个接待你在<strong>一个任期里面只能投一个票</strong>，采用先到先服务的原则</li>
+<li>如果没有投过票，对比候选人节点的Log和当前节点的Log哪个更新，比较方式为<strong>谁的lastLog的term越大谁越新</strong>，如果term相同，<strong>谁的lastLog的index谁越大谁越新</strong>，如果当前节点更新，则拒绝投票。</li>
+</ul>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>Raft状态机图示</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/9.png" alt></p>
+<p> Leader将命令并发的复制给其他节点，并等待其他节点将命令写入到日志中，如果此时有些节点失败或者比较慢，Leader节点会一直重试，所有的节点都保存到日志中，之后Leader节点就提交命令， 在接下来的心跳包所有的从节点都会提交对应的修改，并将节点返回给客户端。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/8.png" alt></p>
+<p>当客户端向服务器发送修改x的请求时，主节点接收到，并且修改掉自己的日志，但并未提交 ( comit )。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/10.png" alt></p>
+<p>此时Leader会告诉所有的节点修改日志，但是都未提交。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/11.png" alt></p>
+<p>从节点收到以后，回复Leader收到。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/12.png" alt></p>
+<p>Leader节点Comit，然后通过心跳包所有的从节点提交。</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/13.png" alt></p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>一个作为候选人的节点要赢得选举，就需要喝网络中大部分节点进行通信，这就意味着已经提交的乳汁条目最少在其中一台服务器节点上出现，如果候选人的日志至少和大多数的服务器上的日志一样新，那么他一定包含全部已经提交的日志条目。</p>
+<p>RequestVote RPC 实现了这个限制： RPC包括勾选人的日志信息，如果它自己的日志比候选人的日志要新，他会拒绝给候选人投票。</p>
+<h3 id="最新判断标准"><a href="#最新判断标准" class="headerlink" title="最新判断标准"></a>最新判断标准</h3><ul>
+<li>如果两个日志的任期号不同，任期号打的日志内容更新</li>
+<li>如果任期号一样大，则更具日志中最后一个命令的索引(Index)，谁大谁最新</li>
+</ul>
+<h3 id="数据安全性"><a href="#数据安全性" class="headerlink" title="数据安全性"></a>数据安全性</h3><p>在我们保证了选举时候选出的Leader必须是携带者最新的日志的同时，也需要保证数据的最新性。如下：</p>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/15.png" alt></p>
+<p>当我们的节点存在于多个路由器或者交换机下时，比如 D、E、F、节点处在交换机子网2中间，其中D为Leader节点。A、B、C是处于子网1中间。正常通信的时候通过分布式一致性协议下不会有任何问题。</p>
+<p>但是当出现网络问题的时候，比如两个交换机之间出现网络分区的时候【老列】，我们仔细想一下这个问题。</p>
+<ul>
+<li><p>正常通信的时候，分布式一致性协议会保证每个节点的数据一致</p>
+</li>
+<li><p>当网络分区出现时，A、B、C节点给D节点发送收不到回应，则会认为Leader D挂了</p>
+</li>
+<li><p>在A、B、C中间会进行Leader选举，假定A变成了Leader</p>
+</li>
+<li><p>与此同时，客户端发送数据修改请求，因为旧的Leader D节点收不到来自A、B、C、的修改确认回应，他会一直重复发心跳包而停止提交修改。</p>
+</li>
+<li><p>A节点作为新的Leader接受了客户端的请求并且同步到了B、C节点。</p>
+</li>
+</ul>
+<p>当某一时刻，网络情况恢复了以后 :</p>
+<ul>
+<li>新的Leader节点 A  携带的数据最新，D节点会发送心跳包给其他节点，D节点由于Term和数据携带不够新而被舍弃</li>
+<li>A发送心跳包同步到其他节点，当然也包括D节点，D节点发现A的数据包更新，于是丢弃Leader职位成为Follower。于是A节点成为Leader，一切正常</li>
+</ul>
+<p><img src="/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/16.png" alt></p>
+<p>最后，推荐 <a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener">Raft</a> 动画演示。可以很清楚了解raft协议的一些过程。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn" rel="external nofollow noreferrer">慕谦</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/">http://www.rubyboy.cn/2020/02/10/wei-fu-wu-jia-gou-san-raft-xie-yi/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Go/">
+                                    <span class="chip bg-color">Go</span>
+                                </a>
+                            
+                                <a href="/tags/Micro-Service/">
+                                    <span class="chip bg-color">Micro Service</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">
+                                    <span class="chip bg-color">微服务</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">赞赏是不耍流氓的鼓励</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/02/10/vmware-fusion-11-gou-mai-de-xu-lie-hao/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="VMware Fusion 11 购买的序列号">
+                        
+                        <span class="card-title">VMware Fusion 11 购买的序列号</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            VMware Fusion 11序列号刚刚购买了 VMware fusion的虚拟机，把序列号公开给有缘人～
+7HYY8-Z8WWY-F1MAN-ECKNY-LUXYX
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-02-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            慕谦
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/VMware-fusion/">
+                        <span class="chip bg-color">VMware fusion</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/02/08/mac-she-zhi-wen-jian-quan-xian-wen-ti/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Mac设置文件权限问题">
+                        
+                        <span class="card-title">Mac设置文件权限问题</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            Mac设置文件权限的问题​        在使用mac时，经常我们遇到相关文件不能使用的情况，其实大多数情况都是，文件权限问题。
+　　文件或目录的访问权限分为只读，只写和可执行三种。以文件为例，只读权限表示只允许读其内容，而禁止对其做任何的
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Tips/" class="post-category">
+                                    Tips
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Mac/">
+                        <span class="chip bg-color">Mac</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/">
+                        <span class="chip bg-color">文件权限</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+            |&nbsp;Powered by&nbsp;<a href="https:www.rubyboy.cn" target="_blank">慕谦小客栈</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">51.6k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/NielJun" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:769288695@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=769288695" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 769288695" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" color="0,0,255"
+        pointColor="0,0,255" opacity='0.7'
+        zIndex="-1" count="99"
+        src="/libs/background/canvas-nest.js"></script>
+    
+
+    
+    
+    <script type="text/javascript" size="150" alpha='0.6'
+        zIndex="-1" src="/libs/background/ribbon-refresh.min.js" async="async"></script>
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

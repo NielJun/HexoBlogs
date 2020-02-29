@@ -1,0 +1,1356 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Go并发编程初探, 小客栈">
+    <meta name="description" content="并发与并行并发：同一时段内执行多个操作,如两排公用一台咖啡机，在时间粒度为1h时的情况下，我们可以把它看作是一个人眼可见的并发模型，当然这只是个比喻。
+
+并行：同一时刻执行多个操作，这里就涉及到两个咖啡机同时处理操作。
+
+明白了并发和并行的">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Go并发编程初探 | 小客栈</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 4.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">小客栈</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">小客栈</div>
+        <div class="logo-desc">
+            
+              今日长缨在手，何时缚住苍龙？
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/Nieljun" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Git
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/Nieljun" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Git" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Go并发编程初探</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Go/">
+                                <span class="chip bg-color">Go</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                                <span class="chip bg-color">服务端开发</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
+                                <span class="chip bg-color">并发编程</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                Go栈
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-01-20
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    9 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h3 id="并发与并行"><a href="#并发与并行" class="headerlink" title="并发与并行"></a>并发与并行</h3><p>并发：同一时段内执行多个操作,如两排公用一台咖啡机，在时间粒度为1h时的情况下，我们可以把它看作是一个人眼可见的并发模型，当然这只是个比喻。</p>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png1.png" alt></p>
+<p>并行：同一时刻执行多个操作，这里就涉及到两个咖啡机同时处理操作。</p>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png2.png" alt></p>
+<p>明白了并发和并行的话，接下来就好说。</p>
+<p><strong>多线程技术</strong></p>
+<ul>
+<li>线程是有操作系统管理的一组程序的执行流，是操作系统能操作的最小单位。简而言之，线程是一个程序运行时[进程]产生的一个小分支，一个进程中可以并发多个线程，每条线程并行执行不同的任务。线程是独立调度和分派的基本单位。线程可以为操作系统内核调度的<strong>内核线程</strong>和由用户进程自行调度的<strong>用户线程</strong></li>
+<li>在很多的编程语言里面，多线程技术的实现是一个抢占式的模型，每一个属于应用层面的线程都是附属于该应用的一个运行分支，通过cpu来进行调度，但是在操作系统层面，不断的从内核态到应用态的切换会使得CPU的处理消耗得更大，简而言之，直接通过操作系统调度不断切换的线程，因为涉及到当前线程从被挂起到得到时间片恢复会浪费很大的资源。所以在java里面对于多线程的使用都会使用线程池来进行优化，但是这种优化也是有瓶颈的，毕竟只是在运用层面。</li>
+<li>Go语言的<strong>goroutine技术</strong>是类似于<strong>unity的协程</strong>技术，但是与之不相同的事，他是在语言层面在Go运行时的内核里面做自己的调度，所以当CPU给到进程时间片的时候，内核会直接对进程树下面的所有的微线程的[goroutine]进行调度，减少了操作系统层面的上下文切换，非常的轻量级。</li>
+</ul>
+<h3 id="Goroutine原理"><a href="#Goroutine原理" class="headerlink" title="Goroutine原理"></a>Goroutine原理</h3><p>简而言之，一个操作系统会对应用户态多个goroutine，而且会使用多个操作系统进线程，而且操作系统线程对于goroutine是 <strong>M：N</strong>的关系。</p>
+<p>做一个模型抽象：</p>
+<ul>
+<li>造作系统线程设为：  M</li>
+<li>用户态线程 [ goroutine ] 设为:    G</li>
+<li>上下文对象设为：    P</li>
+</ul>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png6.png" alt></p>
+<p>其中G会被M去执行，P相当于执行的中间件，也就是M执行G任务的时候P是执行环境，只是类似于操作系统内核态的上下文，只是足够的轻量级。</p>
+<h3 id="Goroutine调度"><a href="#Goroutine调度" class="headerlink" title="Goroutine调度"></a>Goroutine调度</h3><p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png7.png" alt></p>
+<p>当前M执行G任务时，其他的G会进入等待状态，当当前的G被调度完成或者时间片轮询超时，此时的G会被放入队尾，队头任务被调度，依次轮询执行，当然这里面还有一些其他的调度算法。</p>
+<h3 id="当用户态线程阻塞时如何调度？"><a href="#当用户态线程阻塞时如何调度？" class="headerlink" title="当用户态线程阻塞时如何调度？"></a>当用户态线程阻塞时如何调度？</h3><p>由于我们的物理线程会对应执行多个用户态线程(Goroutine)，当我们的某个goroutine进行一个耗时操作的时候，比如：</p>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png8.png" alt></p>
+<p>当当前Mo调度Go进行耗时的文件操作时，如果调度依旧进行，则会出现接下来的所有的被Mo调度的goroutine都会‘卡死’，所以呢，Go在运行时内核为这样的耗时操作新开一个调度，然后单一的去执行耗时操作，其余的依旧轮询使用时间片调度。</p>
+<h3 id="Goroutine池"><a href="#Goroutine池" class="headerlink" title="Goroutine池"></a>Goroutine池</h3><p>当我们在进行某些并发操作计算的时候，每次遇到都开启新的goroutine去执行，难免会出现goroutine的暴增，使用不当甚至出现泄漏的情况。通常使用goroutine池来进行任务的调配和线程间通信。</p>
+<p>比如一个非常简单的例子，<strong>随机不断生成随机数，然后启动worker池来进行计算每个数的各个位上的数的和并且输出。</strong></p>
+<blockquote>
+<p>number: 1234 , result: 1+2+3+4 = 10</p>
+</blockquote>
+<p>开两个抽象类进行封装：</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">type</span> Job <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    JobId  <span class="token builtin">int</span>
+    Number <span class="token builtin">int</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">type</span> Result <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    Job <span class="token operator">*</span>Job
+    sum <span class="token builtin">int</span>
+<span class="token punctuation">}</span></code></pre>
+<p>一个是表示一个计算任务，一个存储计算结果。</p>
+<p>每一个worker都回去做计算任务，并且把计算的结果放入结果队列。</p>
+<pre class=" language-go"><code class="language-go"><span class="token comment" spellcheck="true">// 求出每个位上的值的和 如1234 = 1+2+3+4 = 10</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>job <span class="token operator">*</span>Job<span class="token punctuation">)</span> <span class="token function">Work</span><span class="token punctuation">(</span>result <span class="token keyword">chan</span> <span class="token operator">*</span>Result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">//计算</span>
+    sum <span class="token operator">:=</span> <span class="token number">0</span>
+    number <span class="token operator">:=</span> job<span class="token punctuation">.</span>Number
+
+    <span class="token keyword">for</span> number <span class="token operator">!=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+        temp <span class="token operator">:=</span> number <span class="token operator">%</span> <span class="token number">10</span>
+        sum <span class="token operator">+=</span> temp
+        number <span class="token operator">/=</span> <span class="token number">10</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//把计算的结果变成对象</span>
+    r <span class="token operator">:=</span> <span class="token operator">&amp;</span>Result<span class="token punctuation">{</span>
+        Job<span class="token punctuation">:</span> job<span class="token punctuation">,</span>
+        sum<span class="token punctuation">:</span> sum<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//写入管道</span>
+    result <span class="token operator">&lt;-</span> r
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>而每一个Worker负责从任务队列里面取出任务，然后进行计算。</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">Worker</span><span class="token punctuation">(</span>jobChan <span class="token keyword">chan</span> <span class="token operator">*</span>Job<span class="token punctuation">,</span> resultChan <span class="token keyword">chan</span> <span class="token operator">*</span>Result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">for</span> job <span class="token operator">:=</span> <span class="token keyword">range</span> jobChan <span class="token punctuation">{</span>
+        job<span class="token punctuation">.</span><span class="token function">Work</span><span class="token punctuation">(</span>resultChan<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>再封装一个启动器,表示启动多大的worker池。</p>
+<pre class=" language-go"><code class="language-go"><span class="token comment" spellcheck="true">//启动worker池</span>
+<span class="token keyword">func</span> <span class="token function">StartWorkerPool</span><span class="token punctuation">(</span>poolSize <span class="token builtin">int</span><span class="token punctuation">,</span> jobChan <span class="token keyword">chan</span> <span class="token operator">*</span>Job<span class="token punctuation">,</span> resultChan <span class="token keyword">chan</span> <span class="token operator">*</span>Result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> i <span class="token operator">:=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> poolSize<span class="token punctuation">;</span> i<span class="token operator">++</span> <span class="token punctuation">{</span>
+        <span class="token keyword">go</span> <span class="token function">Worker</span><span class="token punctuation">(</span>jobChan<span class="token punctuation">,</span> resultChan<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>用于产生随机数的接口和输出结果的接口是用来做显示的，这也列出来。</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">ProductJobs</span><span class="token punctuation">(</span>jobChan <span class="token keyword">chan</span> <span class="token operator">*</span>Job<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    jobId <span class="token operator">:=</span> <span class="token number">1</span>
+    <span class="token keyword">for</span> <span class="token punctuation">{</span>
+        jobId<span class="token operator">++</span>
+
+        number <span class="token operator">:=</span> rand<span class="token punctuation">.</span><span class="token function">Int</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+        job <span class="token operator">:=</span> <span class="token operator">&amp;</span>Job<span class="token punctuation">{</span>
+            JobId<span class="token punctuation">:</span>  jobId<span class="token punctuation">,</span>
+            Number<span class="token punctuation">:</span> number<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+
+        jobChan <span class="token operator">&lt;-</span> job
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token keyword">func</span> <span class="token function">PrintWorker</span><span class="token punctuation">(</span>resultChan <span class="token keyword">chan</span> <span class="token operator">*</span>Result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> result <span class="token operator">:=</span> <span class="token keyword">range</span> resultChan <span class="token punctuation">{</span>
+        fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"JobId : %d number: %d  result : %d \n"</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>Job<span class="token punctuation">.</span>JobId<span class="token punctuation">,</span> result<span class="token punctuation">.</span>Job<span class="token punctuation">.</span>Number<span class="token punctuation">,</span> result<span class="token punctuation">.</span>sum<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>最后只需在main里面进行调用即可。</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+    jobChan <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token operator">*</span>Job<span class="token punctuation">,</span> <span class="token number">1024</span><span class="token punctuation">)</span>
+    resultChan <span class="token operator">:=</span> <span class="token function">make</span><span class="token punctuation">(</span><span class="token keyword">chan</span> <span class="token operator">*</span>Result<span class="token punctuation">,</span> <span class="token number">1024</span><span class="token punctuation">)</span>
+
+    <span class="token comment" spellcheck="true">//启动worker池</span>
+    <span class="token function">StartWorkerPool</span><span class="token punctuation">(</span><span class="token number">512</span><span class="token punctuation">,</span> jobChan<span class="token punctuation">,</span> resultChan<span class="token punctuation">)</span>
+
+    <span class="token keyword">go</span> <span class="token function">PrintWorker</span><span class="token punctuation">(</span>resultChan<span class="token punctuation">)</span>
+
+    <span class="token keyword">go</span> <span class="token function">ProductJobs</span><span class="token punctuation">(</span>jobChan<span class="token punctuation">)</span>
+
+    <span class="token keyword">select</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>结果；</p>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/png9.png" alt></p>
+<p>这是个非常简单的例子，但是仔细看会觉得很优雅，这个就是使用goroutine实现像工厂流水线一般的运作方式。</p>
+<h3 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h3><p>首先，Go语言在设计理念上已经做到了足够简单，我们无须像C/C++，Java等语言在设计多线程的时候考虑各种线程之间的问题以及多线程管理带来的麻烦。但是，只要有并发的概念，那就避免不了资源冲突的问题。我以前在设计游戏的时候，因为有些游戏的逻辑比较复杂，用到的协程非常多，导致很多的资源在我某个协程取它的时候已经实现被其他协程修改了。</p>
+<p>比如说： 我有两个协程，一个是用来计算修改子弹的伤害，一个是用来计算子弹销毁。如果两个协程不自己进行处理的话，很多时候子弹就会突然消失。当然游戏设计并不是说的这么简单，中间还有很多的逻辑。</p>
+<p>所以我们需要在两个同时想持有某项资源的线程做一个限定，不能让操作同时发生，出现意料之外的结果。而这样的被多个线程所持有的资源没称作临界资源或临界区。</p>
+<pre class=" language-go"><code class="language-go">x <span class="token operator">=</span> x<span class="token operator">+</span><span class="token number">10</span></code></pre>
+<p>这是一个看起来再简单不过的语句，但是要知道在并发的世界里面，什么都没这么简单，我们分析一下，在程序底层实际上是做了三步<strong>原子操作</strong>：</p>
+<ol>
+<li>先从内存中取出x的值</li>
+<li>CPU进行计算 x+10</li>
+<li>把x+10存储到内存中</li>
+</ol>
+<p>为什么这么分析，因为中间的每一步都有可能被别人取先。 所以我们需要加锁而避免出现临界资源在多个线程同时操作下出现问题。</p>
+<p><img src="/2020/01/20/go-bing-fa-bian-cheng-chu-tan/lock.jpg" alt></p>
+<h3 id="互斥锁"><a href="#互斥锁" class="headerlink" title="互斥锁"></a>互斥锁</h3><p>当对某个资源进行非原子操作的时候，我们对此操作加锁，使得其他的线程对其操作的时候只能等待其锁被释放后才能进入临界区，而多个线程等待的时候，其唤醒策略是随机的，或者看线程的优先级而定。</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">var</span> mutex sync<span class="token punctuation">.</span>Mutex   <span class="token comment" spellcheck="true">// 在全局区定义互斥锁</span>
+
+mutex<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+i<span class="token operator">++</span>
+mutex<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>使用很简单，只需在临界操作前加锁，操作后解除锁即可。</p>
+<h3 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h3><p>在我们对临界区资源进行读操作的时候其实是不用加锁的的，加锁反而会降低性能。但是当我们需要读取值的时候却中途被雪入了其他不正确的值，就会出现错误。所以<strong>读写锁</strong>应运而生。</p>
+<p><strong>读锁：</strong></p>
+<ul>
+<li>当一个goroutine获得读锁以后，<strong>其他的goroutine获取写锁都会等待。</strong></li>
+<li>当一个goroutine获得读锁以后，<strong>其他的goroutine获得读锁时，都会获得锁。</strong></li>
+</ul>
+<p><strong>写锁：</strong></p>
+<ul>
+<li>当一个goroutine获得写锁以后，<strong>其他的goroutine获取写锁和读锁都会等待,写锁是互斥的</strong></li>
+</ul>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">var</span> rwLock sync<span class="token punctuation">.</span>RWMutex
+
+<span class="token comment" spellcheck="true">//读锁</span>
+rwLock<span class="token punctuation">.</span><span class="token function">RLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"a = "</span><span class="token punctuation">,</span>a<span class="token punctuation">)</span>
+rwlock<span class="token punctuation">.</span><span class="token function">RUnlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token comment" spellcheck="true">//写锁</span>
+rwLock<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+a<span class="token operator">++</span>
+rwlock<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<p>在读多写少的情况下，读写锁的性能比互斥锁高很多。</p>
+<h3 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h3><p>为什么要介绍原子操作呢？这个原子操作和上面讲的单步的原子操作是不一样的两件事，这个原子操作是Go语言里面的一种单步操作的函数。由于<strong>加锁代价比较高，比较耗时，需要上下文切换</strong>。所以在Go语言里面，针对基本数据类型可以使用原子操作保证线程安全。原子操作可以在用户态就可以完成，所以性能比互斥锁高。</p>
+<p>在使用互斥锁的时候：</p>
+<pre class=" language-go"><code class="language-go"><span class="token keyword">var</span> mutex sync<span class="token punctuation">.</span>Mutex   <span class="token comment" spellcheck="true">// 在全局区定义互斥锁</span>
+
+mutex<span class="token punctuation">.</span><span class="token function">Lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+i<span class="token operator">++</span>
+mutex<span class="token punctuation">.</span><span class="token function">Unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<p>原子操作：</p>
+<pre class=" language-go"><code class="language-go">atomic<span class="token punctuation">.</span><span class="token function">AddInt32</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>x<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">// 相当于x = x + 1</span></code></pre>
+<p>我对10000个goroutine进行原子操作和互斥锁操作，原子操作的性能是互斥锁的5倍左右，锁着goroutine的数量级越大，性能差异也就越大。</p>
+<p>相对应的其他原子操作：</p>
+<pre class=" language-go"><code class="language-go">a <span class="token operator">:=</span> atomic<span class="token punctuation">.</span><span class="token function">LoadInt32</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>x<span class="token punctuation">)</span>                           <span class="token comment" spellcheck="true">//  加载操作.  var a int = x </span>
+atomic<span class="token punctuation">.</span><span class="token function">StoreInt32</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>x<span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span>                             <span class="token comment" spellcheck="true">//  写入. x = 10</span>
+b <span class="token operator">:=</span> atomic<span class="token punctuation">.</span><span class="token function">SwapInt32</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>x<span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span>                      <span class="token comment" spellcheck="true">//  交换操作</span></code></pre>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn" rel="external nofollow noreferrer">慕谦</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://www.rubyboy.cn/2020/01/20/go-bing-fa-bian-cheng-chu-tan/">http://www.rubyboy.cn/2020/01/20/go-bing-fa-bian-cheng-chu-tan/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Go/">
+                                    <span class="chip bg-color">Go</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                                    <span class="chip bg-color">服务端开发</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
+                                    <span class="chip bg-color">并发编程</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">赞赏是不耍流氓的鼓励</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/01/21/wang-luo-xie-yi-ji-chu/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="网络协议基础">
+                        
+                        <span class="card-title">网络协议基础</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            TCP协议
+HTTP协议http是一个简单的请求-响应协议，它封装在TCP协议之上。它指定了客户端可能发送给服务器什么样的消息以及得到什么样的响应。请求和响应消息的头以ASCII码形式给出；而消息内容则具有一个类似MIME的格式。
+http
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-21
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">
+                        <span class="chip bg-color">网络协议</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/01/20/delve-diao-shi-gong-ju/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Delve调试工具">
+                        
+                        <span class="card-title">Delve调试工具</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+Delve调试工具​    为什么会选择delve呢，很多时候我们会把调试日志和运行时日志用自己能够处理的方式存储起来，比如说直接在开发阶段用log工具，在先上阶段使用日志库文件存储程序运行时的异常信息和不确定性的运行结果，或者是用kaf
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-20
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Go%E6%A0%88/" class="post-category">
+                                    Go栈
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Go/">
+                        <span class="chip bg-color">Go</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">服务端开发</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <a href="http://www.rubyboy.cn" target="_blank">慕谦</a>
+            |&nbsp;Powered by&nbsp;<a href="https:www.rubyboy.cn" target="_blank">慕谦小客栈</a>
+            <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">51.6k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2019";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/NielJun" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:769288695@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=769288695" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 769288695" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript" color="0,0,255"
+        pointColor="0,0,255" opacity='0.7'
+        zIndex="-1" count="99"
+        src="/libs/background/canvas-nest.js"></script>
+    
+
+    
+    
+    <script type="text/javascript" size="150" alpha='0.6'
+        zIndex="-1" src="/libs/background/ribbon-refresh.min.js" async="async"></script>
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
